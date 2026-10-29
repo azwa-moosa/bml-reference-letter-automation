@@ -1,0 +1,165 @@
+// Reference Letter Automation · data model
+//
+// Mirrors the prototype's in-memory data (er-automation-prototype.html,
+// SHA-256 674e8391…0514375) so behaviour stays the same while the data is
+// now stored. SQLite locally; PostgreSQL-ready (see docs/ARCHITECTURE.md).
+//
+// Conventions
+// - Business dates are ISO strings "YYYY-MM-DD", as in the prototype.
+// - Nested request data (form fields, draft, salary, returned notes) is JSON
+//   text, keeping the prototype's object shapes.
+// - LetterRequest.version gives optimistic concurrency.
+// - The migration SQL is hand-written (prisma/migrations/0001_init) and
+//   applied by scripts/db-migrate.ts; tests/unit/schema.test.ts checks they match.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+/// Position master (prototype POSITIONS)
+model Position {
+  code    String @id
+  title   String
+  unit    String
+  jd      String
+  summary String
+}
+
+/// Employee master (prototype EMP + SIDS)
+model Employee {
+  key     String  @id
+  sid     String  @unique
+  name    String
+  first   String
+  sal     String
+  g       String
+  nid     String
+  posCode String
+  dept    String
+  div     String
+  doj     String
+  dor     String?
+  etype   String
+  status  String
+  mgrKey  String?
+  mgrName String?
+  history String  @default("[]")
+}
+
+/// Earlier letters used as wording references (prototype LIBRARY)
+model LibraryLetter {
+  ref      String @id
+  d        String
+  type     String
+  position String
+  unit     String
+  text     String
+}
+
+/// Reference numbers issued before go-live (prototype MANUAL_REG)
+model ManualRegisterEntry {
+  ref    String @id
+  d      String
+  staff  String
+  letter String
+  src    String
+}
+
+/// Sequences: "request" (RL-2026-####). "reference" (BML/HR-####/2026) is kept for
+/// history only: v0.2 no longer gives document reference numbers.
+model Counter {
+  key  String @id
+  next Int
+}
+
+/// A letter request (prototype REQS)
+model LetterRequest {
+  id         String   @id
+  type       String
+  empKey     String
+  step       Int
+  submitted  String
+  delivery   String
+  via        String?
+  fields     String
+  draft      String
+  salary     String?
+  lastSalary String?
+  returned   String?
+  closed     String?
+  closeBy    String?
+  closeNote  String?
+  apprReturn String?
+  /// Legacy document reference (letters issued before v0.2). Never set by v0.2.
+  ref        String?  @unique
+  issuedAt   String?
+  signedBy   String?
+  /// v0.2: rejoiner employment history verified by Employee Relations (JSON)
+  verification String?
+  /// v0.2: signature/stamp images applied at issue (JSON: asset id, label, SHA-256)
+  assets     String?
+  /// 1 = created under the v0.1 route; 2 = v0.2 route (new requests always set 2)
+  routeVersion Int    @default(1)
+  version    Int      @default(1)
+  createdAt  DateTime
+  updatedAt  DateTime
+  trail      TrailEntry[]
+}
+
+/// History (prototype trail). `at` and `role` are added server-side.
+model TrailEntry {
+  id        Int           @id @default(autoincrement())
+  requestId String
+  d         String
+  who       String
+  what      String
+  role      String?
+  at        DateTime
+  request   LetterRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([requestId])
+}
+
+/// v0.2: approved signature and stamp images. Stored in the database, served
+/// only through permission-checked routes. Never deleted (deactivated instead).
+model SignatureAsset {
+  id           String   @id
+  kind         String
+  label        String
+  signer       String?
+  note         String
+  mime         String
+  data         Bytes
+  sha256       String
+  width        Int
+  height       Int
+  active       Boolean  @default(true)
+  uploadedBy   String
+  uploadedRole String
+  uploadedAt   DateTime
+}
+
+/// v0.2: which signature and stamp belong to each letter template.
+model TemplateAsset {
+  type             String    @id
+  signatureAssetId String?
+  stampAssetId     String?
+  requireSignature Boolean   @default(true)
+  requireStamp     Boolean   @default(false)
+  updatedBy        String?
+  updatedAt        DateTime?
+}
+
+/// v0.2: append-only log of administrator changes (uploads, deactivations, template settings).
+model AdminEvent {
+  id   Int      @id @default(autoincrement())
+  who  String
+  role String
+  what String
+  at   DateTime
+}

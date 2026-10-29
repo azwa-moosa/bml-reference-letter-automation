@@ -1,0 +1,1005 @@
+<title>Reference Letter Automation</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Tinos:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: prototype header + sign-in switcher, then the OneUI portal frame (sidebar + content), matching the Employee Relations app */
+:root{
+  --bg:#f4f3f1; --panel:#f8f7f5; --surface:#ffffff; --line:#e4e1dc; --line-2:#efece8;
+  --fg:#1d1b19; --muted:#6c6762; --faint:#9a958f;
+  --accent:#b3141f; --accent-ink:#ffffff; --accent-soft:#fbe9ea;
+  --green:#1d7a4c; --green-soft:#e2f3e9; --amber:#94600a; --amber-soft:#fbf0da;
+  --blue:#2b5a96; --blue-soft:#e7eef8; --red:#b3141f; --red-soft:#fbe9ea; --grey-soft:#efedea;
+  --paper:#ffffff; --ink:#1a1a1a; --fieldmark:#fff4c7; --tag-bg:#fbf0da; --tag-fg:#8a5a06;
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --letter:"Tinos","Times New Roman",Times,serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#141312; --panel:#1a1918; --surface:#211f1d; --line:#35322e; --line-2:#2b2926;
+  --fg:#ecebe8; --muted:#a8a29b; --faint:#7d7872;
+  --accent:#e0454f; --accent-ink:#ffffff; --accent-soft:#3a1b1d;
+  --green:#5cc391; --green-soft:#183326; --amber:#e3b25a; --amber-soft:#3a2d14;
+  --blue:#8cb4ec; --blue-soft:#1a2a40; --red:#f07a80; --red-soft:#3a1b1d; --grey-soft:#2b2926;
+  --paper:#fbfaf7; --ink:#1a1a1a; --fieldmark:#fff1b8; --tag-bg:#3a2d14; --tag-fg:#e3b25a;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#141312; --panel:#1a1918; --surface:#211f1d; --line:#35322e; --line-2:#2b2926;
+  --fg:#ecebe8; --muted:#a8a29b; --faint:#7d7872;
+  --accent:#e0454f; --accent-ink:#ffffff; --accent-soft:#3a1b1d;
+  --green:#5cc391; --green-soft:#183326; --amber:#e3b25a; --amber-soft:#3a2d14;
+  --blue:#8cb4ec; --blue-soft:#1a2a40; --red:#f07a80; --red-soft:#3a1b1d; --grey-soft:#2b2926;
+  --paper:#fbfaf7; --ink:#1a1a1a; --fieldmark:#fff1b8; --tag-bg:#3a2d14; --tag-fg:#e3b25a;
+  color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:14px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{max-width:1260px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ic{flex:none;display:block}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;padding-bottom:14px;border-bottom:2px solid var(--accent)}
+.head h1{margin:6px 0 0;font-size:26px;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+.tag{font-family:var(--mono);font-size:11.5px;background:var(--tag-bg);color:var(--tag-fg);padding:4px 8px;border-radius:3px}
+.signin{margin-top:22px;display:grid;gap:8px;max-width:460px}
+.signin select{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:15px;font-weight:600}
+.who{display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--muted);margin-top:10px}
+.todo{background:var(--accent);color:var(--accent-ink);font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:999px}
+.frame{margin-top:18px;border:1px solid var(--line);border-radius:12px;background:var(--panel);display:grid;grid-template-columns:236px minmax(0,1fr);min-height:640px;overflow:hidden}
+.side{border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.brand{display:flex;gap:11px;align-items:center;padding:0 4px}
+.logo{width:32px;height:32px;border-radius:8px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}
+.brand b{font-size:13.5px;display:block}.brand b em{font-style:normal;color:var(--accent)}
+.brand small{color:var(--muted);font-size:11.5px}
+.navwrap{display:grid;gap:16px}
+.navsec{display:grid;gap:3px}
+.navsec>span{font-size:12px;color:var(--muted);font-weight:500;padding:4px 8px 6px}
+.nav{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;border:1px solid transparent;background:none;cursor:pointer;text-align:left;width:100%;color:var(--fg)}
+.nav:hover{background:var(--surface)}
+.nav.on{background:var(--surface);border-color:var(--line);box-shadow:inset 3px 0 0 var(--accent)}
+.nav.stub{color:var(--muted)}
+.nav .lab{flex:1;min-width:0}
+.badge{background:var(--accent);color:var(--accent-ink);font-size:11px;font-weight:700;min-width:19px;height:19px;border-radius:999px;display:grid;place-items:center;padding:0 5px}
+.newtag{font-size:10.5px;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:0 4px}
+.main{min-width:0;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:12px;padding:13px 20px;border-bottom:1px solid var(--line)}
+.crumb{flex:1;min-width:0;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.crumb b{color:var(--fg);font-weight:600}
+.top .role{font-weight:600;font-size:13px}
+.iconbtn{border:none;background:none;padding:6px;border-radius:6px;cursor:pointer;color:var(--muted);position:relative}
+.iconbtn:hover{background:var(--surface);color:var(--fg)}
+.iconbtn .dot{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.content{padding:26px 24px 40px;display:grid;gap:22px;align-content:start;min-width:0}
+.pg h2{margin:0;font-size:28px;font-weight:700;letter-spacing:-.015em;text-wrap:balance}
+.pg p{margin:4px 0 0;color:var(--muted);font-size:15px;max-width:72ch}
+.back{background:none;border:none;color:var(--muted);cursor:pointer;display:inline-flex;gap:4px;align-items:center;padding:0;font-weight:500}
+.back:hover{color:var(--fg)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
+.card h3{margin:0 0 12px;font-size:15px;font-weight:600}
+.banner{display:flex;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:inset 4px 0 0 var(--accent)}
+.banner .txt{flex:1;min-width:220px}
+.banner b{font-size:15.5px}.banner span{display:block;color:var(--muted)}
+.tile{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;flex:none}
+.t-red{background:var(--accent-soft);color:var(--accent)}.t-green{background:var(--green-soft);color:var(--green)}
+.t-amber{background:var(--amber-soft);color:var(--amber)}.t-blue{background:var(--blue-soft);color:var(--blue)}.t-grey{background:var(--grey-soft);color:var(--muted)}
+.seclabel{font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 0 -10px}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-top:1px solid var(--line-2);cursor:pointer;width:100%;background:none;border-left:none;border-right:none;border-bottom:none;text-align:left}
+.row:first-child{border-top:none}
+.row:hover{background:var(--panel)}
+.row .txt{flex:1;min-width:0}
+.row .t1{font-weight:600;font-size:15px}
+.row .t2{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.row .chev{color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.p-green{background:var(--green-soft);color:var(--green)}.p-amber{background:var(--amber-soft);color:var(--amber)}
+.p-blue{background:var(--blue-soft);color:var(--blue)}.p-red{background:var(--red-soft);color:var(--red)}.p-grey{background:var(--grey-soft);color:var(--muted)}
+.flag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--amber);background:var(--amber-soft);border-radius:4px;padding:1px 6px}
+.btn{display:inline-flex;align-items:center;gap:7px;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer;border:1px solid transparent;font-size:14px}
+.btn-p{background:var(--accent);color:var(--accent-ink)}.btn-p:hover{filter:brightness(.93)}
+.btn-g{background:var(--surface);border-color:var(--line);color:var(--fg)}.btn-g:hover{background:var(--panel)}
+.btn-s{padding:6px 11px;font-size:13px}
+.btn-q{background:none;color:var(--red);padding-inline:8px}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+.btn:focus-visible,.nav:focus-visible,.row:focus-visible,.choice:focus-visible,.iconbtn:focus-visible,.chip:focus-visible,.fbtn:focus-visible,tr.click:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.kv{display:grid;grid-template-columns:minmax(110px,38%) minmax(0,1fr);gap:7px 14px;margin:0}
+.kv dt{color:var(--muted)}.kv dd{margin:0;overflow-wrap:anywhere}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.choice{display:flex;gap:12px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;align-items:flex-start}
+.choice:hover{border-color:var(--accent)}
+.choice b{display:block;font-size:15px}.choice span{display:block;color:var(--muted);margin-top:2px}
+.choice small{display:block;margin-top:8px;font-size:12.5px;color:var(--fg)}
+.form{display:grid;gap:16px;max-width:640px}
+.f{display:grid;gap:6px}
+.f label{font-weight:600;font-size:13.5px}
+.f .hint{color:var(--muted);font-size:12.5px}
+.f input[type=text],.f input[type=date],.f input[type=number],.f select,.f textarea,.in{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.f textarea,.in.ta{min-height:84px;resize:vertical}
+.f input:focus,.f select:focus,.f textarea:focus,.in:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.check{display:flex;gap:9px;align-items:flex-start;font-weight:500}
+.check input{margin-top:3px;accent-color:var(--accent)}
+.note{background:var(--blue-soft);color:var(--fg);border-radius:8px;padding:10px 12px;font-size:13px;display:flex;gap:9px}
+.note .ic{color:var(--blue);margin-top:1px}
+.note.warn{background:var(--amber-soft)}.note.warn .ic{color:var(--amber)}
+.err{background:var(--red-soft);color:var(--red);border-radius:8px;padding:10px 12px;font-size:13px}
+.err ul{margin:4px 0 0;padding-left:18px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--grey-soft);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 10px;font-size:13px;cursor:pointer}
+.chip .x{display:grid;place-items:center;border-radius:50%;width:18px;height:18px}
+.chip:hover .x{background:var(--line)}
+.adder{display:flex;gap:8px;flex-wrap:wrap}.adder input{flex:1;min-width:160px}
+.timeline{list-style:none;margin:0;padding:0;display:grid}
+.timeline li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;position:relative;padding-bottom:14px}
+.timeline li:last-child{padding-bottom:0}
+.timeline li::before{content:"";position:absolute;left:10px;top:20px;bottom:0;width:2px;background:var(--line)}
+.timeline li:last-child::before{display:none}
+.timeline .mk{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--line);background:var(--surface);z-index:1}
+.timeline .done .mk{background:var(--green);border-color:var(--green);color:var(--surface)}
+.timeline .cur .mk{border-color:var(--accent)}
+.timeline .cur .mk::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.timeline .ret .mk{border-color:var(--red);background:var(--red-soft)}
+.timeline b{font-weight:600;display:block}
+.timeline .sub{color:var(--muted);font-size:12.5px}
+.timeline .todo-line{color:var(--faint)}
+.trail{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.trail li{display:grid;grid-template-columns:86px minmax(0,1fr);gap:10px;font-size:13px}
+.trail .d{color:var(--muted);font-variant-numeric:tabular-nums}
+.case{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:18px;align-items:start}
+.stack{display:grid;gap:16px;min-width:0}
+.paperwrap{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto}
+.paper{background:var(--paper);color:var(--ink);font-family:var(--letter);font-size:14.5px;line-height:1.55;max-width:640px;min-width:300px;margin:0 auto;padding:44px 50px 36px;box-shadow:0 1px 2px rgba(0,0,0,.08),0 6px 18px rgba(0,0,0,.06);border-radius:2px}
+.paper p{margin:0 0 12px}
+.lt-mast{display:flex;justify-content:flex-end;font-family:var(--font);font-weight:700;font-size:11px;letter-spacing:.14em;color:#b3141f;margin-bottom:26px}
+.lt-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:22px;font-size:13.5px}
+.lt-title{text-align:center;font-weight:700;text-decoration:underline;margin:6px 0 16px}
+.lt-rec{display:grid;grid-template-columns:170px minmax(0,1fr);gap:4px 10px;margin:0 0 16px}
+.lt-rec .h{grid-column:1/-1;font-weight:700;text-decoration:underline;margin-top:8px}
+.lt-sig{margin-top:22px}
+.lt-foot{margin-top:34px;padding-top:10px;border-top:1px solid #d9d6d1;font-size:11.5px;font-style:italic;color:#555;text-align:center}
+.paper .ph{color:#8a8a8a}
+.show-fields .fld{background:var(--fieldmark);border-radius:2px;box-shadow:0 0 0 1px var(--fieldmark)}
+mark.miss{background:#fde2e3;color:#a1121b;border-radius:2px;padding:0 2px;font-family:var(--font);font-size:12.5px;font-weight:600}
+.draftbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.mono{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.editors{display:grid;gap:14px;margin-bottom:14px}
+.lib{display:grid;gap:10px}
+.libitem{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:6px;font-size:13px}
+.libitem q{font-family:var(--letter);font-size:14px;quotes:none}
+.libitem .meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.fbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font-weight:500;display:inline-flex;gap:6px;align-items:center}
+.fbtn.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.fbtn .n{font-variant-numeric:tabular-nums;opacity:.7}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:760px}
+table.slim{min-width:560px}table.slim td{vertical-align:middle}
+.cell{display:flex;gap:10px;align-items:center}.cell .tile{width:30px;height:30px}
+td.chevcell{color:var(--muted);width:36px}
+th,td{text-align:left;padding:11px 14px;border-top:1px solid var(--line-2);vertical-align:top}
+th{border-top:none;font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;background:var(--panel)}
+tbody tr.click{cursor:pointer}tbody tr.click:hover{background:var(--panel)}
+td .s{display:block;color:var(--muted);font-size:12.5px}
+.num{font-variant-numeric:tabular-nums}
+.qcard{display:grid;gap:14px}
+.qhead{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.qhead .txt{flex:1;min-width:200px}
+.qhead b{font-size:15.5px}
+.qhead span{display:block;color:var(--muted);font-size:13px}
+.datecheck{display:grid;gap:6px}
+.empty{padding:34px 20px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--fg);font-size:15px;margin-bottom:2px}
+.split{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.legend{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--muted)}
+.legend i{width:12px;height:12px;border-radius:2px;background:var(--fieldmark);display:inline-block}
+.search{max-width:360px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:11px 16px;border-radius:9px;font-weight:500;max-width:min(560px,calc(100vw - 32px));box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:20}
+@media (max-width:980px){.case{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:780px){
+  .frame{grid-template-columns:minmax(0,1fr)}
+  .side{border-right:none;border-bottom:1px solid var(--line);padding:14px 12px;gap:10px}
+  .navwrap{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+  .navsec{display:flex;gap:6px}.navsec>span{display:none}
+  .nav{width:auto;white-space:nowrap}
+  .content{padding:20px 16px 32px}
+  .pg h2{font-size:24px}
+  .paper{padding:28px 24px 30px}
+  .lt-rec{grid-template-columns:130px minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:no-preference){.toast{animation:up .2s ease}@keyframes up{from{opacity:0;transform:translate(-50%,8px)}}}
+</style>
+
+<div class="app">
+  <header>
+    <div class="head">
+      <div>
+        <div class="eyebrow">Bank of Maldives · Employee Relations</div>
+        <h1>Reference Letter Automation</h1>
+      </div>
+      <span class="tag">PROTOTYPE · example data only</span>
+    </div>
+    <div class="signin">
+      <label class="eyebrow" for="roleSel">Viewing as (prototype sign-in)</label>
+      <select id="roleSel"></select>
+    </div>
+    <div class="who" id="who"></div>
+  </header>
+  <div class="frame">
+    <aside class="side" id="side"></aside>
+    <section class="main">
+      <div class="top" id="top"></div>
+      <div class="content" id="content"></div>
+    </section>
+  </div>
+</div>
+<div id="toastHost"></div>
+
+<script>
+/* ---------- icons ---------- */
+const P={
+ chevR:'<path d="m9 18 6-6-6-6"/>',chevL:'<path d="m15 18-6-6 6-6"/>',
+ bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+ panel:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/>',
+ grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+ mega:'<path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>',
+ hist:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
+ trend:'<path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/>',
+ target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+ archive:'<rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/>',
+ file:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5M9 13h6M9 17h6"/>',
+ inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
+ check:'<path d="M20 6 9 17l-5-5"/>',checksq:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="m9 12 2 2 4-4"/>',
+ userplus:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>',
+ list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+ bank:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/>',
+ pen:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+ plane:'<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',
+ grad:'<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+ calx:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M10 14l4 4M14 14l-4 4"/>',
+ brief:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+ door:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',x:'<path d="M18 6 6 18M6 6l12 12"/>',
+ info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+ download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+ layers:'<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/>',
+ books:'<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>'
+};
+const ic=(n,s=18)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
+
+/* ---------- helpers ---------- */
+const TODAY='2026-10-27';
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ord=n=>{const s=['th','st','nd','rd'],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])};
+const fmtDate=iso=>{const [y,m,d]=iso.split('-').map(Number);return `${ord(d)} ${MONTHS[m-1]} ${y}`};
+const sd=iso=>{const [y,m,d]=iso.split('-').map(Number);return `${d} ${MONTHS[m-1].slice(0,3)} ${y}`};
+const joinAnd=a=>a.length>1?a.slice(0,-1).join(', ')+' and '+a[a.length-1]:(a[0]||'');
+function dateList(arr){
+  const ds=[...arr].sort(); if(!ds.length) return '';
+  if(ds.every(x=>x.slice(0,7)===ds[0].slice(0,7))){const [y,m]=ds[0].split('-').map(Number);return `${joinAnd(ds.map(x=>ord(+x.slice(8))))} ${MONTHS[m-1]} ${y}`}
+  return joinAnd(ds.map(fmtDate));
+}
+function rangeText(a,b){const [y1,m1,d1]=a.split('-').map(Number),[y2,m2,d2]=b.split('-').map(Number);return `${ord(d1)} ${MONTHS[m1-1]}${y1!==y2?' '+y1:''} to ${ord(d2)} ${MONTHS[m2-1]} ${y2}`}
+function service(from,to){const a=from.split('-').map(Number),b=to.split('-').map(Number);let m=(b[0]-a[0])*12+(b[1]-a[1]);if(b[2]<a[2])m--;const y=Math.floor(m/12),mm=m%12;return [y?`${y} year${y>1?'s':''}`:'',mm?`${mm} month${mm>1?'s':''}`:''].filter(Boolean).join(' ')||'Less than one month'}
+const dayCount=(a,b)=>Math.round((Date.parse(b)-Date.parse(a))/864e5)+1;
+const ageOf=iso=>{const d=Math.round((Date.parse(TODAY)-Date.parse(iso))/864e5);return d<=0?'Today':d===1?'1 day':d+' days'};
+const money=n=>'MVR '+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const aan=w=>/^[aeiou]/i.test(w)?'an':'a';
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+
+/* ---------- position master (one approved summary per position, from the JD library) ---------- */
+const POSITIONS={
+ 'CO-OFF':{title:'Card Operations Officer',unit:'Card Operations Unit',jd:'Card Operations Unit - Card Operations Officer.docx',summary:'responsible for verifying and authorising card production and provisioning data, supervising card embossing and PIN generation within agreed service levels, and liaising with other departments to resolve card-related issues'},
+ 'CO-AST':{title:'Card Operations Assistant',unit:'Card Operations Unit',jd:'Card Operations Unit - Card Operations Assistant.docx',summary:'responsible for card embossing, PIN generation and the dispatch of cards and PINs, and for attending to customer card issues while keeping customer information confidential'},
+ 'CO-MGR':{title:'Manager, Card Operations',unit:'Card Operations Unit',jd:'Card Operations Unit - Manager, Card Operations.docx',summary:'responsible for overseeing the functions of the Card Operations Unit, ensuring that processes are in place and followed, and improving service based on customer enquiries and complaints'},
+ 'LC-CSO':{title:'Customer Service Officer',unit:'BML Loan Centre',jd:'Bml Loan Centre - Customer Service Officer.docx',summary:'responsible for engaging closely with customers, understanding their financial needs, and overseeing Branch upkeep and resource management in line with established procedures and standards'},
+ 'LC-CSA':{title:'Customer Service Assistant',unit:'BML Loan Centre',jd:'Bml Loan Centre - Customer Service Assistant.docx',summary:'responsible for providing all services related to loans and overdrafts, attending to customer queries and documenting all records related to work as per relevant procedures'},
+ 'AOC-CSA':{title:'Customer Service Assistant',unit:'BML Account Opening Centre',jd:'BML Account Opening Centre - Customer Service Assistant.docx',summary:'responsible for account opening, customer information updates, card and internet banking applications, and other counter services for customers who approach the Bank'},
+ 'CPM-FRA':{title:'Card Fraud Risk Analyst',unit:'Card & Payment Monitoring Unit',jd:'Card & Payment Monitoring Unit - Card Fraud Risk Analyst.docx',summary:'responsible for the day-to-day monitoring of card and payments operations for fraud and suspicious activity, investigating incidents and reporting the results to management'},
+ 'CAS-OFF':{title:'Card & ATM Settlement Officer',unit:'Card & ATM Settlement Unit',jd:'Card & Atm Settlement Unit - Card & ATM Settlement Officer.docx',summary:'responsible for supervising the reconciliation of card networks and card systems, resolving ATM imbalances and overseeing other card and ATM settlement functions'},
+ 'BSD-BSA':{title:'Business Systems Analyst',unit:'Business Systems Department',jd:'Business Systems Department - Business Systems Analyst.docx',summary:'responsible for identifying functional business requirements, studying changes to business systems and delivering solutions together with business teams'},
+ 'CSD-DIR':{title:'Director of Customer Service',unit:'Customer Service Division',jd:'2. Customer Service Division - Director of Customer Service.docx',summary:'responsible for leading the Bank\'s customer service strategy, improving customer experience and building a strong service culture across the Bank'},
+ 'PC-ERL':{title:'Employee Relations Lead',unit:'Employee Relations',jd:'Not linked yet',summary:'responsible for handling employee relations cases, preparing staff letters and records, and advising staff and managers on the Bank\'s people policies'},
+ 'PC-TRO':{title:'Total Rewards Officer',unit:'Total Rewards',jd:'Not linked yet',summary:'responsible for processing payroll and benefits changes, maintaining salary records and answering staff queries on pay and allowances'},
+ 'PC-ERM':{title:'Employee Relations & Engagement Manager',unit:'Employee Relations',jd:'Not linked yet',summary:'responsible for leading employee relations and staff engagement, managing grievance and disciplinary processes, and running engagement programmes across the Bank'},
+ 'PC-HTR':{title:'Head of Total Rewards & Employee Relations',unit:'Total Rewards & Employee Relations',jd:'Not linked yet',summary:'responsible for the Bank\'s reward, payroll and employee relations functions, including pay policy, benefits and staff relations'}
+};
+/* earlier issued letters: wording reference for the Employee Relations Lead */
+const LIBRARY=[
+ {ref:'BML/HR-2310/2024',d:'2024-10-21',type:'job_opportunity',position:'Customer Service Officer',unit:'Main Branch',text:'As a Customer Service Officer, you are responsible for engaging closely with customers, understanding their financial needs, and overseeing Branch upkeep and resource management in line with established procedures and standards.'},
+ {ref:'BML/HR-2051/2025',d:'2025-03-04',type:'job_opportunity',position:'Customer Service Officer',unit:'Hulhumale\' Branch',text:'As a Customer Service Officer, you are responsible for providing exceptional customer service and handling customer complaints, along with coordinating, supervising and coaching staff.'},
+ {ref:'BML/HR-2155/2025',d:'2025-06-18',type:'job_opportunity',position:'Customer Service Assistant',unit:'BML Loan Centre',text:'As a Customer Service Assistant, you are responsible for providing all services related to loans and overdrafts, attending to customer queries and documenting all records related to work as per relevant procedures.'},
+ {ref:'BML/HR-1987/2024',d:'2024-08-09',type:'release_reference',position:'Customer Service Assistant',unit:'Main Branch',text:'As a Customer Service Assistant, she was responsible for performing general banking functions such as accepting cash/cheque deposits and payments, facilitating cash withdrawals, and issuing banking products and services to customers who approach the Bank.'},
+ {ref:'BML/HR-2208/2025',d:'2025-08-12',type:'release_reference',position:'Customer Service Assistant',unit:'Business Centre',text:'As a Customer Service Assistant, she was responsible for delivering personalized services to business customers on various banking products and services.'},
+ {ref:'BML/HR-2240/2025',d:'2025-09-30',type:'job_opportunity',position:'Business Compliance Officer',unit:'Compliance Department',text:'As a Business Compliance Officer, you are responsible for coordinating all functional areas and branches of the Bank to develop effective and feasible policies and procedures that meet compliance requirements.'}
+];
+const coreOf=t=>{const m=t.match(/,\s*(?:you|he|she)\s+(?:are|is|was|were)\s+(?:currently\s+)?(.+?)\.?$/i);return m?m[1]:null};
+
+/* ---------- employee master (example data; passports are not held, staff type them) ---------- */
+const EMP={
+ E1:{name:'Aminath Shifa',first:'Shifa',sal:'Ms.',g:'f',nid:'A098765',pos:'CO-OFF',dept:'Operations Department',div:'Operations Division',doj:'2016-03-13',etype:'Permanent',status:'active',mgr:'E2'},
+ E2:{name:'Hassan Rasheed',first:'Hassan',sal:'Mr.',g:'m',nid:'A067123',pos:'CO-MGR',dept:'Operations Department',div:'Operations Division',doj:'2009-08-02',etype:'Permanent',status:'active',mgrName:'Ali Shareef'},
+ E3:{name:'Ibrahim Naseem',first:'Naseem',sal:'Mr.',g:'m',nid:'A154210',pos:'CO-AST',dept:'Operations Department',div:'Operations Division',doj:'2021-01-10',etype:'Permanent',status:'active',mgr:'E2'},
+ E4:{name:'Mariyam Zeena',first:'Zeena',sal:'Ms.',g:'f',nid:'A112876',pos:'CPM-FRA',dept:'Operations Department',div:'Operations Division',doj:'2014-06-01',etype:'Permanent',status:'active',mgrName:'Aishath Nadha'},
+ E5:{name:'Ahmed Rifau',first:'Rifau',sal:'Mr.',g:'m',nid:'A089034',pos:'CAS-OFF',dept:'Operations Department',div:'Operations Division',doj:'2012-11-18',etype:'Permanent',status:'active',mgrName:'Moosa Waheed'},
+ E6:{name:'Hawwa Lamya',first:'Lamya',sal:'Ms.',g:'f',nid:'A176455',pos:'LC-CSO',dept:'Branches & Service Centres Department',div:'Retail, Business & SME Banking Division',doj:'2018-04-22',etype:'Permanent',status:'active',mgrName:'Ahmed Shareef',history:['LC-CSA']},
+ E7:{name:'Mohamed Shiham',first:'Shiham',sal:'Mr.',g:'m',nid:'A101234',pos:'BSD-BSA',dept:'Business Systems Department',div:'Technology Division',doj:'2015-02-01',dor:'2025-08-31',etype:'Permanent',status:'released'},
+ E8:{name:'Fathimath Nisha',first:'Nisha',sal:'Ms.',g:'f',nid:'A133908',pos:'AOC-CSA',dept:'Branches & Service Centres Department',div:'Retail, Business & SME Banking Division',doj:'2019-07-07',dor:'2026-03-31',etype:'Permanent',status:'released'},
+ E9:{name:'Ismail Waheed',first:'Ismail',sal:'Mr.',g:'m',nid:'A045512',pos:'CSD-DIR',dept:'Customer Service Division',div:'Customer Service Division',doj:'2011-05-15',etype:'Permanent',status:'active',mgrName:'Deputy CEO'},
+ E10:{name:'Shaheem Ali',first:'Shaheem',sal:'Mr.',g:'m',nid:'A120987',pos:'PC-ERL',dept:'People & Culture',div:'People & Culture',doj:'2017-09-03',etype:'Permanent',status:'active',mgr:'E12'},
+ E11:{name:'Aishath Reema',first:'Reema',sal:'Ms.',g:'f',nid:'A143322',pos:'PC-TRO',dept:'People & Culture',div:'People & Culture',doj:'2019-02-17',etype:'Permanent',status:'active',mgr:'E13'},
+ E12:{name:'Fathimath Rayya Hilmy',first:'Rayya',sal:'Ms.',g:'f',nid:'A076541',pos:'PC-ERM',dept:'People & Culture',div:'People & Culture',doj:'2013-04-07',etype:'Permanent',status:'active',mgr:'E13'},
+ E13:{name:'Mariyam Shazna',first:'Shazna',sal:'Ms.',g:'f',nid:'A061209',pos:'PC-HTR',dept:'People & Culture',div:'People & Culture',doj:'2008-10-12',etype:'Permanent',status:'active',mgrName:'Director, People & Culture'}
+};
+Object.values(EMP).forEach(e=>{const p=POSITIONS[e.pos];e.position=p.title;e.unit=p.unit});
+const SIDS={E1:'10452',E2:'07318',E3:'13207',E4:'09166',E5:'08241',E6:'11873',E7:'09902',E8:'12655',E9:'06115',E10:'10988',E11:'12034',E12:'08877',E13:'05521'};Object.entries(SIDS).forEach(([k,v])=>EMP[k].sid=v);
+const pr=e=>e.g==='f'?{he:'she',him:'her',his:'her'}:{he:'he',him:'him',his:'his'};
+const mgrName=e=>e.mgr?EMP[e.mgr].name:(e.mgrName||'Not recorded');
+const isSenior=e=>/\b(director|chief)\b/i.test(e.position);
+const activeEmps=()=>Object.entries(EMP).filter(([,e])=>e.status==='active');
+
+/* ---------- directories ---------- */
+const EMBASSIES={
+ 'Australia':'Australian High Commission\n21, Srimath R. G. Senanayake Mawatha\nColombo 07\nSri Lanka',
+ 'Canada':'High Commission of Canada\nNo. 6, Srimath R. G. Senanayake Mawatha\nColombo 07\nSri Lanka',
+ 'France':'Embassy of France\n89, Rosmead Place\nColombo 07\nSri Lanka',
+ 'Germany':'Consular and Visa Section\nEmbassy of the Federal Republic of Germany\n43, Temple Lane\nColombo 03\nSri Lanka',
+ 'India':'High Commission of India\nLot No. 11499 N1 56 (E), Hithigas Magu\nGoalhi 4, Hulhumalé Phase I\nRepublic of Maldives',
+ 'Italy':'Embassy of Italy\n55, Jawatta Road\nColombo 05\nSri Lanka',
+ 'Japan':'Consular Section\nEmbassy of Japan in Maldives\n5th Floor, Aage Building\nBoduthakurufaanu Magu\nMalé, Republic of Maldives',
+ 'Saudi Arabia':'Royal Embassy of Saudi Arabia\nMTCC Sawmill Relocation Building\nBoduthakurufaanu Magu\nMalé, Republic of Maldives',
+ 'Spain':'Embassy of Spain\n12, Prithviraj Road\nNew Delhi 110011\nIndia',
+ 'Switzerland':'Embassy of Switzerland\n63, Srimath R. G. Senanayake Mawatha\nGregory’s Road\nColombo 07\nSri Lanka',
+ 'United Kingdom':'British High Commission\n389, Bauddhaloka Mawatha\nColombo 07\nSri Lanka',
+ 'United States':'Consular Section\nEmbassy of the United States of America\n210, Galle Road\nColombo 03\nSri Lanka'
+};
+const embLabel=c=>EMBASSIES[c]?`${c} · ${EMBASSIES[c].split('\n').find(l=>/embassy|commission/i.test(l))}`:c;
+const INSTITUTIONS=['Avid College','Clique College','College of Defence and Security Studies','Cyryx College','Maldives Business School','Maldives Institute of Technology','Mandhu College','MAPS College','MIANZ College','National College of Policing and Law Enforcement','Villa College','Zikura International College'];
+const SIGNERS={ere:{name:'Fathimath Rayya Hilmy',title:'Employee Relations & Engagement Manager'},head:{name:'Mariyam Shazna',title:'Head of Total Rewards & Employee Relations'}};
+const FOOTER='This letter is electronically generated and issued by People &amp; Culture, Bank of Maldives PLC, and does not require a signature.';
+
+const TYPES={
+ academic_excuse:{name:'Academic Excuse Letter',icon:'calx',tpl:'Template - Academic Excuse Letter.docx',use:'Asks your college to excuse classes you missed because of work.',route:'Your line manager confirms the dates.'},
+ academic_reference:{name:'Academic Reference',icon:'grad',tpl:'Template - Academic Reference.docx',use:'Confirms your employment for a study application.',route:''},
+ financial_reference:{name:'Financial Reference Letter',icon:'bank',tpl:'Template - Financial Reference Letter.docx',use:'Employment record with your gross salary, for loans and banks.',route:''},
+ job_opportunity:{name:'Job Opportunity Letter',icon:'brief',tpl:'Template - Job Opportunity Letter.docx',use:'Describes your current role, for job applications.',route:''},
+ visa:{name:'Visa Letter',icon:'plane',tpl:'Template  - Visa Letter.docx',use:'Letter to an embassy for travel on annual leave or an official trip.',route:'Your line manager confirms the dates.'},
+ release_reference:{name:'Released Staff Reference Letter',icon:'door',tpl:'Template - Release Staff Reference Letter.docx',use:'Reference with role summary for a former employee.'},
+ release_general:{name:'Staff Release General Reference',icon:'door',tpl:'Template - Staff Release General Reference letter.docx',use:'Employment record for a former employee.'}
+};
+const STAFF_TYPES=['academic_excuse','academic_reference','financial_reference','job_opportunity','visa'];
+const tplName=r=>r.type==='visa'&&r.fields.trip==='official'?'Visa Letter (official trip format)':TYPES[r.type].tpl;
+
+/* ---------- workflow: route built per request ---------- */
+const S=(k,label,owner)=>({k,label,owner});
+const DONE=S('done','Letter viewable to staff','');
+function route(r){
+  const t=r.type,f=r.fields||{},official=t==='visa'&&f.trip==='official';
+  const out=[t.startsWith('release')?S('submit','Request logged by Employee Relations','Employee Relations Lead'):S('submit','Staff request','Staff')];
+  if(t==='academic_excuse') out.push(S('lm','Line manager approves the class dates','Line manager'));
+  if(t==='visa') out.push(S('lm',official?'Line manager approves the official trip':'Line manager approves the leave duration','Line manager'));
+  if(t==='financial_reference'||(t==='job_opportunity'&&f.includeSalary)||(t==='visa'&&!official&&f.includeSalary)) out.push(S('tr','Total Rewards enters gross salary','Total Rewards'));
+  out.push(S('er',t==='academic_reference'||t.startsWith('release')?'Employee Relations Lead drafts and reviews':'Employee Relations Lead reviews','Employee Relations Lead'));
+  out.push(S('appr','ER & Engagement Manager or Head of TR & ER approves','Approver'));
+  out.push(DONE);
+  return out;
+}
+const key=r=>route(r)[r.step].k;
+const isOpen=r=>!r.closed&&key(r)!=='done';
+function status(r,forStaff){
+  if(r.closed==='declined') return ['Declined','red'];
+  if(r.closed==='cancelled') return ['Cancelled','grey'];
+  if(r.returned) return [forStaff?'Returned to you':'Returned to staff','red'];
+  const k=key(r);
+  if(k==='lm') return ['With line manager','amber'];
+  if(k==='done') return [r.delivery==='printed'?'Ready for collection':'Issued','green'];
+  if(forStaff) return ['In progress','blue'];
+  if(k==='tr') return ['With Total Rewards','amber'];
+  if(k==='appr') return ['Awaiting approval','amber'];
+  return ['With Employee Relations Lead','blue'];
+}
+const pill=(r,fs)=>{const [l,t]=status(r,fs);return `<span class="pill p-${t}">${esc(l)}</span>`};
+
+function makeDraft(type,e,f){
+  const d={signer:isSenior(e)?'':'ere'};
+  if(type==='visa'&&f.trip!=='official') d.addressee=EMBASSIES[f.embassy]||f.embassy||'';
+  if(type==='academic_excuse'||type==='academic_reference') d.recipient=`The Registrar\n${f.institution}\nMalé, Republic of Maldives`;
+  if(type==='job_opportunity'||type==='release_reference'){d.jd=POSITIONS[e.pos].summary;d.jdSource='Position master'}
+  if(type==='job_opportunity') d.extra=f.extra||'';
+  return d;
+}
+function mk(o){o.draft=Object.assign(makeDraft(o.type,EMP[o.emp],o.fields||{}),o.draft||{});o.returned=o.returned||null;o.closed=o.closed||null;return o}
+
+let nextReq=147, nextRef=2480;
+const T=(d,who,what)=>({d,who,what});
+const REQS=[
+ mk({id:'RL-2026-0141',type:'visa',emp:'E1',step:1,submitted:'2026-10-25',delivery:'digital',fields:{trip:'annual',embassy:'Japan',start:'2026-12-14',end:'2026-12-24',passport:'LA0458213',includeSalary:true},trail:[T('2026-10-25','Aminath Shifa','Submitted the request in OneUI')]}),
+ mk({id:'RL-2026-0145',type:'visa',emp:'E1',step:1,submitted:'2026-10-26',delivery:'printed',fields:{trip:'official',embassy:'Germany',event:'Regional Card Operations Workshop',location:'Frankfurt, Germany',start:'2026-12-02',end:'2026-12-04',sponsored:true,visaType:'Schengen',passport:'LA0458213',attendees:[{emp:'E1',passport:'LA0458213'},{emp:'E3',passport:'LA0721904'}]},trail:[T('2026-10-26','Shaheem Ali','Submitted on behalf of Aminath Shifa')]}),
+ mk({id:'RL-2026-0143',type:'academic_excuse',emp:'E3',step:1,submitted:'2026-10-26',delivery:'digital',fields:{institution:'Villa College',dates:['2026-10-19','2026-10-21','2026-10-22'],reason:'Card scheme migration cutover. I was rostered on site for the evening batch runs on these days.'},trail:[T('2026-10-26','Ibrahim Naseem','Submitted the request in OneUI')]}),
+ mk({id:'RL-2026-0142',type:'visa',emp:'E3',step:2,submitted:'2026-10-23',delivery:'printed',fields:{trip:'annual',embassy:'India',start:'2026-11-20',end:'2026-11-28',passport:'LA0721904',includeSalary:true,leaveFrom:'2026-11-20',leaveTo:'2026-11-28'},trail:[T('2026-10-23','Ibrahim Naseem','Submitted the request in OneUI'),T('2026-10-24','Hassan Rasheed','Approved leave duration 20 Nov 2026 to 28 Nov 2026')]}),
+ mk({id:'RL-2026-0139',type:'financial_reference',emp:'E4',step:1,submitted:'2026-10-21',delivery:'digital',fields:{purpose:'Housing loan application'},lastSalary:{amount:18950,eff:'2026-01-01'},trail:[T('2026-10-21','Mariyam Zeena','Submitted the request in OneUI')]}),
+ mk({id:'RL-2026-0136',type:'financial_reference',emp:'E5',step:2,submitted:'2026-10-16',delivery:'digital',fields:{purpose:'Vehicle loan application'},salary:{amount:24850,eff:'2026-07-01',by:'Aishath Reema',d:'2026-10-20'},trail:[T('2026-10-16','Ahmed Rifau','Submitted the request in OneUI'),T('2026-10-20','Aishath Reema','Entered gross salary MVR 24,850.00')]}),
+ mk({id:'RL-2026-0140',type:'job_opportunity',emp:'E6',step:1,submitted:'2026-10-24',delivery:'digital',fields:{earlier:true,includeSalary:false,extra:'Please mention that I led the loan documentation review project at BML Loan Centre in 2025.'},trail:[T('2026-10-24','Hawwa Lamya','Submitted the request in OneUI')]}),
+ mk({id:'RL-2026-0144',type:'academic_reference',emp:'E9',step:1,submitted:'2026-10-26',delivery:'digital',fields:{institution:'Villa College'},trail:[T('2026-10-26','Ismail Waheed','Submitted the request in OneUI')]}),
+ mk({id:'RL-2026-0137',type:'release_reference',emp:'E7',step:1,submitted:'2026-10-22',delivery:'digital',via:'Email to Employee Relations',fields:{note:'Needed for a job application abroad.'},trail:[T('2026-10-22','Shaheem Ali','Logged a request received by email from a former employee')]}),
+ mk({id:'RL-2026-0133',type:'job_opportunity',emp:'E4',step:3,submitted:'2026-10-19',delivery:'digital',fields:{earlier:false,includeSalary:true,extra:''},salary:{amount:18950,eff:'2026-01-01',by:'Aishath Reema',d:'2026-10-20'},trail:[T('2026-10-19','Mariyam Zeena','Submitted the request in OneUI'),T('2026-10-20','Aishath Reema','Entered gross salary MVR 18,950.00'),T('2026-10-22','Shaheem Ali','Reviewed the draft and sent it for approval')]}),
+ mk({id:'RL-2026-0135',type:'release_general',emp:'E8',step:2,draft:{signer:'head'},submitted:'2026-10-14',delivery:'digital',via:'Walk-in at Head Office',fields:{note:''},trail:[T('2026-10-14','Shaheem Ali','Logged a walk-in request from a former employee'),T('2026-10-15','Shaheem Ali','Drafted the letter and sent it for approval')]}),
+ mk({id:'RL-2026-0138',type:'academic_reference',emp:'E1',step:3,submitted:'2026-10-08',delivery:'digital',fields:{institution:'Maldives Business School'},ref:'BML/HR-2462/2026',issuedAt:'2026-10-12',signedBy:'ere',trail:[T('2026-10-08','Aminath Shifa','Submitted the request in OneUI'),T('2026-10-09','Shaheem Ali','Drafted the letter and sent it for approval'),T('2026-10-12','Fathimath Rayya Hilmy','Approved and issued BML/HR-2462/2026')]})
+];
+const MANUAL_REG=[
+ {ref:'BML/HR-2478/2026',d:'2026-10-22',staff:'Mariyam Shifza',letter:'Visa Letter',src:'Excel register (before go-live)'},
+ {ref:'BML/HR-2479/2026',d:'2026-10-23',staff:'Ali Zahir',letter:'Academic Reference',src:'Excel register (before go-live)'}
+];
+
+/* ---------- roles ---------- */
+const ROLES={
+ staff:{label:'Staff',short:'Staff',name:'Aminath Shifa',emp:'E1',meta:'Card Operations Officer, Card Operations Unit · Operations',portal:'ESS Portal',home:'letters'},
+ manager:{label:'Line manager',short:'Line manager',name:'Hassan Rasheed',emp:'E2',meta:'Manager, Card Operations · line manager of Aminath Shifa and Ibrahim Naseem',portal:'ESS Portal',home:'team'},
+ tr:{label:'Total Rewards team',short:'Total Rewards',name:'Aishath Reema',emp:'E11',meta:'Total Rewards Officer · People & Culture',portal:'HR Workspace',home:'salary'},
+ erl:{label:'Employee Relations Lead',short:'Employee Relations Lead',name:'Shaheem Ali',emp:'E10',meta:'Employee Relations Lead · People & Culture',portal:'HR Workspace',home:'inbox'},
+ ere:{label:'ER & Engagement Manager',short:'ER & Engagement Manager',name:'Fathimath Rayya Hilmy',emp:'E12',meta:'Employee Relations & Engagement Manager · People & Culture',portal:'HR Workspace',home:'approve'},
+ head:{label:'Head of Total Rewards & ER',short:'Head of TR & ER',name:'Mariyam Shazna',emp:'E13',meta:'Head of Total Rewards & Employee Relations · People & Culture',portal:'HR Workspace',home:'approve'}
+};
+const st={role:'staff',view:'letters',sel:null,form:null,filter:'action',err:{},search:'',tf:'pending',showLetter:false};
+const actor=()=>ROLES[st.role];
+
+const q={
+ mine:()=>REQS.filter(r=>r.emp===actor().emp),
+ team:()=>REQS.filter(r=>isOpen(r)&&!r.returned&&key(r)==='lm'&&EMP[r.emp].mgr===actor().emp),
+ er:()=>REQS.filter(r=>isOpen(r)&&!r.returned&&key(r)==='er'),
+ waiting:()=>REQS.filter(r=>isOpen(r)&&!r.returned&&['lm','tr','appr'].includes(key(r))),
+ returned:()=>REQS.filter(r=>isOpen(r)&&r.returned),
+ done:()=>REQS.filter(r=>!isOpen(r)),
+ tr:()=>REQS.filter(r=>isOpen(r)&&key(r)==='tr'),
+ appr:()=>REQS.filter(r=>isOpen(r)&&key(r)==='appr'&&(st.role==='ere'||st.role==='head'?r.draft.signer===st.role:true))
+};
+function todoCount(role){
+  const keep=st.role; st.role=role;
+  const own=q.mine().filter(r=>r.returned&&isOpen(r)).length+q.team().length;
+  const n=own+({staff:0,manager:0,tr:q.tr().length,erl:q.er().length,ere:q.appr().length,head:q.appr().length}[role]);
+  st.role=keep; return n;
+}
+
+/* ---------- letter rendering (the 7 templates + official trip format) ---------- */
+function renderLetter(r){
+  const e=EMP[r.emp],p=pr(e),f=r.fields,d=r.draft,miss=[];
+  const v=(val,label)=>val?`<span class="fld">${esc(val)}</span>`:(miss.push(label),`<mark class="miss">[${esc(label)}]</mark>`);
+  const lines=(t,label)=>t&&t.trim()?`<span class="fld">${t.trim().split('\n').map(esc).join('<br>')}</span>`:(miss.push(label),`<mark class="miss">[${esc(label)}]</mark>`);
+  const ref=r.ref?esc(r.ref):'<span class="ph">BML/HR-____/2026 (given on approval)</span>';
+  const head=`<div class="lt-mast">BANK OF MALDIVES</div><div class="lt-head"><span>Reference No: ${ref}</span><span>Date: ${fmtDate(r.issuedAt||TODAY)}</span></div>`;
+  const sg=signerOf(r);
+  let signBlock;
+  if(sg) signBlock=`<b>${v(sg.name)}</b><br>${v(sg.title)}`;
+  else signBlock=v('','signing authority');
+  const sig=`<div class="lt-sig">Yours sincerely,<br><br>${signBlock}</div><div class="lt-foot">${FOOTER}</div>`;
+  const nm=`${e.sal} ${e.name}`;
+  const sal=r.salary?money(r.salary.amount):null;
+  const rec=rows=>`<div class="lt-rec">${rows.map(x=>x[0]==='h'?`<div class="h">${x[1]}</div>`:`<div>${x[0]}:</div><div>${x[1]}</div>`).join('')}</div>`;
+  const employer=[['h','The Employer'],['Name','Bank of Maldives PLC'],['Address','Head Office, No. 11, Boduthakurufaanu Magu, Male’ 20094'],['Nature of business','Commercial Bank']];
+  let body='';
+  switch(r.type){
+   case 'visa':{
+     if(f.trip==='official'){
+       const att=f.attendees||[],n=att.length,who=n===2?'both attendees':n>2?'all attendees':'the attendee';
+       body=`<div class="lt-title">TO WHOM IT MAY CONCERN</div>
+       <p>Please be advised that the following personnel from Bank of Maldives PLC will be attending the ${v(f.event,'event name')} held in ${v(f.location,'location')}. The event will be held from ${v(f.start&&f.end&&rangeText(f.start,f.end),'event dates')}.${f.sponsored?` The Bank will sponsor the meeting expenses for ${who}.`:''}</p>
+       ${att.map(a=>{const x=EMP[a.emp],parts=x.name.split(' '),sur=parts[parts.length-1];return rec([['Surname',v(sur.toUpperCase())],['Other Names',v(parts.slice(0,-1).join(' ').toUpperCase())],['Job Title',v(x.position.toUpperCase())],['Passport Number',v(a.passport,'passport number')]])}).join('')}
+       <p>Kindly please arrange to issue ${f.visaType?v(f.visaType)+' ':''}VISA for the above purpose.</p>`;
+     }else{
+       const from=f.leaveFrom||f.start,to=f.leaveTo||f.end;
+       body=`<p>${lines(d.addressee,'embassy address')}</p><p>Dear Sir/Madam,</p>
+       <p>Please be advised that ${v(nm)} holding Maldivian Passport Number ${v(f.passport,'passport number')} has been employed with Bank of Maldives since ${v(fmtDate(e.doj))}. ${cap(p.he)} is currently working as ${aan(e.position)} ${v(e.position)} at our ${v(e.unit)}${f.includeSalary?` and earns a monthly gross salary of ${v(sal,'gross salary from Total Rewards')}`:''}.</p>
+       <p>We understand that ${p.he} is applying for visa to travel during ${p.his} Annual Leave period from ${v(from&&fmtDate(from),'leave start')} to ${v(to&&fmtDate(to),'leave end')}, for which we have no objection.</p>`;
+     }
+     break}
+   case 'academic_excuse':{
+     const dates=f.approvedDates||f.dates||[];const inst=f.institution||'';
+     const kind=/college/i.test(inst)?'College':/universit/i.test(inst)?'University':/school/i.test(inst)?'School':'institution';
+     body=`<p>${lines(d.recipient,'college address')}</p><p>Dear Sir/Madam,</p>
+     <p>This is to inform that ${v(nm)}, National Identity Card (${v(e.nid)}), working as ${aan(e.position)} ${v(e.position)} at our ${v(e.unit)} and currently a student at your esteemed ${kind} was unable to attend classes on ${v(dateList(dates),'dates approved by line manager')} as ${p.he} was required to attend important work related responsibilities.</p>
+     <p>We understand that 80% attendance is required to be eligible to sit in the exam. Therefore, we humbly request you to excuse ${p.him} for the above mentioned classes without affecting ${p.his} eligibility to sit for exam.</p>`;break}
+   case 'academic_reference':
+     body=`<p>${lines(d.recipient,'institution address')}</p><p>Dear Sir/Madam,</p>
+     <p>This is to confirm that ${v(nm)} (NID: ${v(e.nid)}) has been employed with Bank of Maldives PLC since ${v(fmtDate(e.doj))}. Currently, ${p.he} is working as ${aan(e.position)} ${v(e.position)} in our ${v(e.unit)}.</p>
+     <p>We understand that to develop professionally and improve ${p.his} career prospects, ${p.he} intends to pursue further education. In this regard, we believe ${p.he} will make a valuable contribution to any endeavor ${p.he} wishes to undertake.</p>`;break;
+   case 'financial_reference':
+     body=`<div class="lt-title">EMPLOYMENT RECORD</div>${rec([...employer,['h','The Employee'],['Name',v(e.name)],['Identity Card number',v(e.nid)],['Date of appointment',v(fmtDate(e.doj))],['Service period',v(service(e.doj,TODAY))],['Present position',v(e.position)],['Place of employment',v(e.unit+', '+e.dept)+'.'],['Employment type',v(e.etype)+'.'],['Gross Salary',v(sal&&sal+' per month','gross salary from Total Rewards')+'.']])}`;break;
+   case 'job_opportunity':{
+     const h=f.earlier&&e.history&&e.history.length?POSITIONS[e.history[0]]:null;
+     const intro=h?`You have been employed with Bank of Maldives PLC since ${v(fmtDate(e.doj))}. Initially you joined as ${aan(h.title)} ${v(h.title)} at our ${v(h.unit)} and presently you are working as ${aan(e.position)} ${v(e.position)} at our ${v(e.unit)}.`:`You have been employed with Bank of Maldives PLC since ${v(fmtDate(e.doj))} as ${aan(e.position)} ${v(e.position)} at our ${v(e.unit)}.`;
+     body=`<p>${v(nm)}<br>${v(e.position)}<br>${v(e.unit)}<br>${v(e.dept)}<br>${v(e.div)}<br>Bank of Maldives PLC</p><p>Dear ${v(e.first)},</p>
+     <p>${intro}</p><p>As ${aan(e.position)} ${v(e.position)}, you are ${v(d.jd,'role summary')}.</p>${d.extra&&d.extra.trim()?`<p>${v(d.extra.trim())}</p>`:''}${f.includeSalary?`<p>Your current monthly gross salary is ${v(sal,'gross salary from Total Rewards')}.</p>`:''}<p>We wish you success in your career pursuits.</p>`;break}
+   case 'release_reference':
+     body=`<p><b>Reference letter of: ${v(nm)} (NID: ${v(e.nid)})</b></p><div class="lt-title">TO WHOM IT MAY CONCERN</div>
+     <p>This is to confirm that ${v(nm)} was employed with Bank of Maldives PLC from ${v(fmtDate(e.doj))} to ${v(e.dor&&fmtDate(e.dor),'release date')} as ${aan(e.position)} ${v(e.position)} at our ${v(e.unit)}.</p>
+     <p>As ${aan(e.position)} ${v(e.position)}, ${p.he} was ${v(d.jd,'role summary')}.</p><p>We wish ${p.him} success in ${p.his} future endeavors.</p>`;break;
+   case 'release_general':
+     body=`<div class="lt-title">EMPLOYMENT RECORD</div>${rec([...employer,['h','The Employee'],['Name',v(e.name)],['Identity Card number',v(e.nid)],['Duration',v(fmtDate(e.doj))+' – '+v(e.dor&&fmtDate(e.dor),'release date')],['Service period',v(service(e.doj,e.dor||TODAY))],['Job position',v(e.position)],['Place of employment',v(e.unit+', '+e.dept)+'.']])}`;break;
+  }
+  return {html:head+body+sig,miss};
+}
+
+/* ---------- shell ---------- */
+const MYLETTERS={sec:'My letters',items:[['letters','Reference Letters','file']]};
+const NAV={
+ staff:[{sec:'Employee Relations',items:[['stub','EmployeeVoice','mega'],['stub','Disciplinary History','hist'],['stub','PM Appeals','trend'],['letters','Reference Letters','file'],['stub','My PIP','target'],['stub','My Records','archive']]}],
+ manager:[{sec:'Employee Relations',items:[['letters','Reference Letters','file'],['stub','PM Appeals','trend'],['stub','My Records','archive']]}],
+ tr:[{sec:'Total Rewards',items:[['salary','Salary Information','bank']]},MYLETTERS],
+ erl:[{sec:'Reference Letters',items:[['inbox','Letter Inbox','inbox'],['behalf','Request on Behalf of Staff','userplus'],['log','Log Former Staff Request','door']]},{sec:'Drafting',items:[['positions','Position Master','layers'],['library','Letter Library','books']]},MYLETTERS],
+ ere:[{sec:'Approvals',items:[['approve','Letters to Approve','pen']]},{sec:'Reference Letters',items:[['inbox','Letter Inbox','inbox'],['library','Letter Library','books']]},MYLETTERS],
+ head:[{sec:'Approvals',items:[['approve','Letters to Approve','pen']]},{sec:'Reference Letters',items:[['inbox','Letter Inbox','inbox'],['library','Letter Library','books']]},MYLETTERS]
+};
+function navFor(){
+  const n=NAV[st.role].map(s=>({...s,items:[...s.items]}));
+  if(Object.values(EMP).some(e=>e.mgr===actor().emp)) n.push({sec:'Manager',items:[['team','Team Approvals','checksq']]});
+  return n;
+}
+const VIEWNAME={letters:'Reference Letters',team:'Team Approvals',inbox:'Letter Inbox',behalf:'Request on Behalf of Staff',log:'Log Former Staff Request',positions:'Position Master',library:'Letter Library',salary:'Salary Information',approve:'Letters to Approve'};
+function badgeFor(v){
+  if(v==='letters') return q.mine().filter(r=>r.returned&&isOpen(r)).length;
+  if(v==='team') return q.team().length;
+  if(v==='inbox'&&st.role==='erl') return q.er().length;
+  if(v==='salary') return q.tr().length;
+  if(v==='approve') return q.appr().length;
+  return 0;
+}
+function renderShell(){
+  const sel=document.getElementById('roleSel');
+  sel.innerHTML=Object.entries(ROLES).map(([k,r])=>{const n=todoCount(k);return `<option value="${k}" ${k===st.role?'selected':''}>${r.label}${n?` (${n} to do)`:''}</option>`}).join('');
+  const a=actor(),n=todoCount(st.role),nav=navFor();
+  document.getElementById('who').innerHTML=`<span>${esc(a.name)} · ${esc(a.meta)}</span>${n?`<span class="todo">${n} to do</span>`:''}`;
+  document.getElementById('side').innerHTML=`<div class="brand"><div class="logo">${ic('grid',17)}</div><div><b>OneUI <em>${a.portal}</em></b><small>Bank of Maldives</small></div></div>
+  <div class="navwrap">${nav.map(s=>`<nav class="navsec" aria-label="${s.sec}"><span>${s.sec}</span>${s.items.map(([v,l,i])=>{const b=v==='stub'?0:badgeFor(v);
+   return `<button class="nav ${v==='stub'?'stub':''} ${st.view===v?'on':''}" data-act="${v==='stub'?'stub':'nav'}" data-v="${v}" data-l="${l}">${ic(i)}<span class="lab">${l}</span>${v==='letters'&&st.role==='staff'&&!b?'<span class="newtag">New</span>':''}${b?`<span class="badge">${b}</span>`:''}</button>`}).join('')}</nav>`).join('')}</div>`;
+  const secOf=nav.find(s=>s.items.some(i=>i[0]===st.view));
+  const crumbs=[secOf?secOf.sec:'',VIEWNAME[st.view]];
+  if(st.sel) crumbs.push(st.sel); else if(st.form) crumbs.push('New request');
+  document.getElementById('top').innerHTML=`<span class="ic" style="color:var(--muted)">${ic('panel')}</span><div class="crumb">${crumbs.map((c,i)=>i===crumbs.length-1?`<b>${esc(c)}</b>`:`<span>${esc(c)}</span><span>›</span>`).join('')}</div>
+   <span class="role">${a.short}</span><button class="iconbtn" data-act="bell" aria-label="Notifications">${ic('bell')}${n?'<span class="dot"></span>':''}</button><button class="iconbtn" data-act="theme" aria-label="Switch light or dark">${ic('sun')}</button>`;
+}
+
+/* ---------- shared bits ---------- */
+function summary(r){
+  const f=r.fields;
+  switch(r.type){
+   case 'visa':return f.trip==='official'?`Official trip · ${f.event} · ${sd(f.start)} to ${sd(f.end)}`:`Annual leave · ${f.embassy} · ${sd(f.start)} to ${sd(f.end)}${f.includeSalary?' · with salary':''}`;
+   case 'academic_excuse':return `${f.institution} · ${(f.dates||[]).length} class date${(f.dates||[]).length===1?'':'s'}`;
+   case 'academic_reference':return f.institution;
+   case 'financial_reference':return f.purpose;
+   case 'job_opportunity':return f.includeSalary?'Employment reference · with salary':'Employment reference';
+   default:return 'Former employee';
+  }
+}
+const tile=r=>{const [,t]=status(r,true);return `<div class="tile t-${t}">${ic(TYPES[r.type].icon)}</div>`};
+const empty=(b,s)=>`<div class="empty"><b>${b}</b>${s}</div>`;
+const seniorFlag=e=>isSenior(e)?` <span class="flag">${ic('info',12)} Director / Chief</span>`:'';
+function fieldRows(r,forStaff){
+  const f=r.fields,rows=[];
+  if(r.type==='visa'){
+    rows.push(['Purpose',f.trip==='official'?'Official Trip':'Annual Leave'],['Letter for',embLabel(f.embassy)]);
+    if(f.trip==='official'){rows.push(['Event',f.event],['Location',f.location],['Event dates',`${sd(f.start)} to ${sd(f.end)}`],['Expenses',f.sponsored?'Sponsored by the Bank':'Not sponsored']);if(f.visaType)rows.push(['Visa type',f.visaType]);rows.push(['Attendees',(f.attendees||[]).map(a=>`${EMP[a.emp].name} (${a.passport})`).join(', ')])}
+    else{rows.push(['Travel dates',`${sd(f.start)} to ${sd(f.end)} (${dayCount(f.start,f.end)} days)`]);if(f.leaveFrom)rows.push(['Leave approved',`${sd(f.leaveFrom)} to ${sd(f.leaveTo)}`]);rows.push(['Passport number',f.passport],['Salary in letter',f.includeSalary?'Yes':'No'])}
+  }
+  if(r.type==='academic_excuse'){rows.push(['Institution',f.institution],['Class dates missed',(f.dates||[]).map(sd).join(', ')]);if(f.approvedDates)rows.push(['Dates approved',f.approvedDates.map(sd).join(', ')||'None']);rows.push([forStaff?'Work reason':'Work reason (manager and ER only)',f.reason])}
+  if(r.type==='academic_reference') rows.push(['Institution',f.institution]);
+  if(r.type==='financial_reference') rows.push(['Purpose',f.purpose]);
+  if(r.type==='job_opportunity'){rows.push(['Earlier roles',f.earlier?'Mention earlier roles':'Current role only'],['Salary in letter',f.includeSalary?'Yes':'No']);if(f.extra)rows.push(['Additional information',f.extra])}
+  if(r.via) rows.push(['Received via',r.via]);
+  if(f.note) rows.push(['Note',f.note]);
+  if(r.type==='visa') rows.push(['Copy',r.delivery==='printed'?'Digital and printed (collect from Employee Relations)':'Digital only']);
+  return `<dl class="kv">${rows.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`;
+}
+const trailHTML=r=>`<ul class="trail">${r.trail.map(t=>`<li><span class="d">${sd(t.d)}</span><span><b>${esc(t.who)}</b> · ${esc(t.what)}</span></li>`).join('')}</ul>`;
+
+/* ---------- my letters (every signed-in person) ---------- */
+function staffTimeline(r){
+  const full=route(r),hasLm=full.some(s=>s.k==='lm');
+  const R=[full[0],...(hasLm?[S('lm','Line manager confirms the dates','')]:[]),S('prep','Letter being prepared',''),S('done','Letter issued','')];
+  const k=key(r),cs=k==='submit'?0:k==='lm'?1:k==='done'?R.length-1:R.length-2;
+  return `<ol class="timeline">${R.map((s,i)=>{
+    let cls='',sub='';
+    if(r.closed&&i>=cs){cls=i===cs?'ret':'';sub=i===cs?(r.closed==='declined'?'Declined':'Cancelled'):''}
+    else if(i<cs||(i===cs&&s.k==='done')){cls='done';sub=i===0?sd(r.submitted):(s.k==='done'&&r.issuedAt?`${sd(r.issuedAt)} · ${r.ref}`:'')}
+    else if(i===cs){cls=r.returned?'ret':'cur';sub=r.returned?'Returned to you for changes':s.k==='lm'?`With ${mgrName(EMP[r.emp])}`:'In progress'}
+    return `<li class="${cls}"><span class="mk">${cls==='done'?ic('check',12):''}</span><div><b class="${!cls?'todo-line':''}">${s.label}</b>${sub?`<span class="sub">${esc(sub)}</span>`:''}</div></li>`}).join('')}</ol>`;
+}
+/* ---------- request form (own request, or ER Lead on behalf of staff) ---------- */
+function vForm(){
+  const F=st.form,forE=EMP[F.forEmp||actor().emp],behalf=!!F.forEmp;
+  const forNote=behalf?`<div class="note">${ic('info',16)}<span>Requesting for <b>${esc(forE.name)}</b>, ${esc(forE.position)}, ${esc(forE.unit)}. ${esc(forE.name.split(' ')[0])} is notified and can follow the request in OneUI.</span></div>`:'';
+  if(!F.type) return `<div><button class="back" data-act="back">${ic('chevL',16)} ${behalf?'Choose a different staff member':'All requests'}</button></div>
+   <div class="pg"><h2>Which letter ${behalf?'is needed':'do you need'}?</h2></div>${forNote}
+   <div class="choices">${STAFF_TYPES.map(t=>`<button class="choice" data-act="pick" data-t="${t}"><div class="tile t-red">${ic(TYPES[t].icon)}</div><div><b>${TYPES[t].name}</b><span>${TYPES[t].use}</span>${TYPES[t].route?`<small>${TYPES[t].route}</small>`:''}</div></button>`).join('')}</div>`;
+  const V=F.values,val=k=>esc(V[k]??''),you=behalf?'their':'your';
+  const sel=(id,opts,ph,lab)=>`<select id="${id}" data-f="${id}">${ph?`<option value="">${ph}</option>`:''}${opts.map(o=>`<option value="${esc(o)}" ${V[id]===o?'selected':''}>${esc(lab?lab(o):o)}</option>`).join('')}</select>`;
+  const otherBox=(k,ph)=>V[k]==='Other'?`<input type="text" id="${k}Other" data-f="${k}Other" value="${val(k+'Other')}" placeholder="${ph}">`:'';
+  const salaryBox=`<label class="check"><input type="checkbox" id="includeSalary" data-f="includeSalary" ${V.includeSalary?'checked':''}> Include ${you} gross salary in the letter</label>`;
+  let fields='';
+  switch(F.type){
+   case 'academic_excuse':fields=`
+    <div class="f"><label for="institution">Institution</label>${sel('institution',[...INSTITUTIONS,'Other'],'Choose the institution')}${otherBox('institution','Type the institution name')}</div>
+    <div class="f"><label for="newDate">Class dates missed</label><div class="adder"><input type="date" id="newDate" max="${TODAY}"><button class="btn btn-g" data-act="adddate">${ic('plus',16)} Add date</button></div>
+     <div class="chips">${F.dates.map(d=>`<button class="chip" data-act="rmdate" data-d="${d}" aria-label="Remove ${sd(d)}">${sd(d)}<span class="x">${ic('x',12)}</span></button>`).join('')||'<span class="hint">No dates added yet.</span>'}</div></div>
+    <div class="f"><label for="reason">Work reason</label><textarea id="reason" data-f="reason" placeholder="What work kept ${behalf?'them':'you'} from class on these dates?">${val('reason')}</textarea></div>`;break;
+   case 'academic_reference':fields=`
+    <div class="f"><label for="institution">Institution</label>${sel('institution',[...INSTITUTIONS,'Other'],'Choose the institution')}${otherBox('institution','Type the institution name')}</div>`;break;
+   case 'financial_reference':fields=`
+    <div class="f"><label for="purpose">What is the letter for?</label><input type="text" id="purpose" data-f="purpose" value="${val('purpose')}" placeholder="e.g. Housing loan application"></div>`;break;
+   case 'job_opportunity':fields=`
+    <label class="check"><input type="checkbox" id="earlier" data-f="earlier" ${V.earlier?'checked':''}> Mention ${you} earlier roles at the Bank</label>
+    ${salaryBox}
+    <div class="f"><label for="extra">Additional information to include in the letter (optional)</label><textarea id="extra" data-f="extra" placeholder="e.g. a project, award or responsibility ${behalf?'they':'you'} would like mentioned">${val('extra')}</textarea></div>`;break;
+   case 'visa':{
+    const official=V.trip==='official';
+    const others=activeEmps().filter(([id])=>id!==(F.forEmp||actor().emp)&&!F.attendees.some(a=>a.emp===id));
+    fields=`
+    <div class="f"><label for="trip">Purpose</label><select id="trip" data-f="trip"><option value="annual" ${!official?'selected':''}>Annual Leave</option><option value="official" ${official?'selected':''}>Official Trip</option></select></div>
+    <div class="f"><label for="embassy">Embassy the letter is for</label>${sel('embassy',[...Object.keys(EMBASSIES),'Other'],'Choose the country',o=>o==='Other'?'Other':embLabel(o))}${otherBox('embassy','Type the embassy name')}</div>
+    ${official?`
+    <div class="f"><label for="event">Event or meeting</label><input type="text" id="event" data-f="event" value="${val('event')}" placeholder="e.g. Temenos Customer Forum"></div>
+    <div class="f"><label for="location">Held in</label><input type="text" id="location" data-f="location" value="${val('location')}" placeholder="City, country"></div>
+    <div class="two"><div class="f"><label for="start">Event from</label><input type="date" id="start" data-f="start" value="${val('start')}" min="${TODAY}"></div><div class="f"><label for="end">Event to</label><input type="date" id="end" data-f="end" value="${val('end')}" min="${TODAY}"></div></div>
+    <div class="f"><label for="visaType">Visa type (optional)</label><input type="text" id="visaType" data-f="visaType" value="${val('visaType')}" placeholder="e.g. Schengen"></div>
+    <label class="check"><input type="checkbox" id="sponsored" data-f="sponsored" ${V.sponsored?'checked':''}> The Bank is sponsoring the trip expenses</label>
+    <div class="f"><label for="passport">${behalf?esc(forE.name.split(' ')[0])+"'s":'Your'} passport number</label><input type="text" id="passport" data-f="passport" value="${val('passport')}"></div>
+    <div class="f"><label for="attEmp">Other staff attending (optional)</label><div class="adder"><select id="attEmp" class="in" style="flex:1;min-width:180px"><option value="">Choose a colleague</option>${others.map(([id,e])=>`<option value="${id}">${esc(e.name)} · ${esc(e.position)}</option>`).join('')}</select><input type="text" id="attPass" class="in" placeholder="Their passport number" style="flex:1;min-width:150px"><button class="btn btn-g" data-act="addatt">${ic('plus',16)} Add</button></div>
+     <div class="chips">${F.attendees.map(a=>`<button class="chip" data-act="rmatt" data-e="${a.emp}" aria-label="Remove ${esc(EMP[a.emp].name)}">${esc(EMP[a.emp].name)} · ${esc(a.passport)}<span class="x">${ic('x',12)}</span></button>`).join('')}</div></div>`
+    :`
+    <div class="two"><div class="f"><label for="start">Travel from</label><input type="date" id="start" data-f="start" value="${val('start')}" min="${TODAY}"></div><div class="f"><label for="end">Travel to</label><input type="date" id="end" data-f="end" value="${val('end')}" min="${TODAY}"></div></div>
+    <div class="f"><label for="passport">Passport number</label><input type="text" id="passport" data-f="passport" value="${val('passport')}"></div>
+    ${salaryBox}`}`;break}
+  }
+  const errs=F.errors.length?`<div class="err"><b>Check these before sending:</b><ul>${F.errors.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:'';
+  return `<div><button class="back" data-act="${F.editing?'back':'pickagain'}">${ic('chevL',16)} ${F.editing?'Back':'Choose a different letter'}</button></div>
+  <div class="pg"><h2>${TYPES[F.type].name}</h2>${TYPES[F.type].route?`<p>${TYPES[F.type].route}</p>`:''}</div>
+  <div class="card"><div class="form">${forNote}${errs}${fields}
+   ${F.type==='visa'?`<div class="f"><label for="delivery">Copy</label><select id="delivery" data-f="delivery"><option value="digital" ${V.delivery!=='printed'?'selected':''}>Digital only</option><option value="printed" ${V.delivery==='printed'?'selected':''}>Digital and printed (collect from Employee Relations)</option></select></div>`:''}
+   <div class="actions"><button class="btn btn-p" data-act="submit">${F.editing?'Resubmit request':'Send request'}</button><button class="btn btn-g" data-act="back">Cancel</button></div></div></div>`;
+}
+function vBehalf(){
+  if(st.form) return vForm();
+  const er=st.err.behalf;
+  return `<div class="pg"><h2>Request on Behalf of Staff</h2><p>For staff who ask Employee Relations directly. The request follows the same approvals as one made in OneUI, and the staff member can follow it there.</p></div>
+  <div class="card"><div class="form">${er?`<div class="err">${esc(er)}</div>`:''}
+   <div class="f"><label for="bh_emp">Staff member</label><select id="bh_emp"><option value="">Search the employee master</option>${activeEmps().map(([id,e])=>`<option value="${id}">${esc(e.name)} · ${esc(e.position)} · ${e.nid}</option>`).join('')}</select></div>
+   <div class="actions"><button class="btn btn-p" data-act="behalf-go">Continue</button></div></div></div>`;
+}
+
+/* ---------- line manager ---------- */
+const toApprove=r=>{const f=r.fields;if(r.type==='visa')return f.trip==='official'?`Official trip, ${sd(f.start)} to ${sd(f.end)}`:`Leave ${sd(f.start)} to ${sd(f.end)} (${dayCount(f.start,f.end)} days)`;return `${f.dates.length} class date${f.dates.length===1?'':'s'}`};
+function vTeamDetail(r){
+  const e=EMP[r.emp],f=r.fields,er=st.err[r.id],can=isOpen(r)&&!r.returned&&key(r)==='lm'&&e.mgr===actor().emp;
+  let body;
+  if(r.type==='visa'&&f.trip==='official') body=`<dl class="kv"><dt>Event</dt><dd>${esc(f.event)}</dd><dt>Held in</dt><dd>${esc(f.location)}</dd><dt>Event dates</dt><dd>${sd(f.start)} to ${sd(f.end)}</dd><dt>Expenses</dt><dd>${f.sponsored?'Sponsored by the Bank':'Not sponsored'}</dd><dt>Attendees</dt><dd>${(f.attendees||[]).map(a=>esc(EMP[a.emp].name)).join(', ')}</dd></dl>`;
+  else if(r.type==='visa') body=`<dl class="kv"><dt>Embassy</dt><dd>${esc(embLabel(f.embassy))}</dd><dt>Travel requested</dt><dd>${sd(f.start)} to ${sd(f.end)} · ${dayCount(f.start,f.end)} days</dd></dl>
+     ${can?`<div class="two"><div class="f"><label for="lf_${r.id}">Leave approved from</label><input type="date" id="lf_${r.id}" value="${f.start}"></div><div class="f"><label for="lt_${r.id}">Leave approved to</label><input type="date" id="lt_${r.id}" value="${f.end}"></div></div><span class="mono">These dates are printed on the visa letter.</span>`:''}`;
+  else body=`<dl class="kv"><dt>Institution</dt><dd>${esc(f.institution)}</dd><dt>Work reason</dt><dd>${esc(f.reason)}</dd></dl>
+     ${can?`<div class="f"><label>Approve the dates ${pr(e).he} was needed at work</label><div class="datecheck">${f.dates.map(d=>`<label class="check"><input type="checkbox" data-lmdate="${r.id}" value="${d}" checked> ${fmtDate(d)}</label>`).join('')}</div><span class="hint">Untick any date you cannot confirm. Only ticked dates appear on the letter.</span></div>`:''}`;
+  const label=r.type==='visa'?(f.trip==='official'?'Approve official trip':'Approve leave duration'):'Approve dates';
+  return `<div><button class="back" data-act="back">${ic('chevL',16)} Team Approvals</button></div>
+  <div class="split"><div class="pg"><h2>${esc(e.name)} · ${TYPES[r.type].name}</h2><p>${esc(e.position)} · ${r.id} · submitted ${sd(r.submitted)}</p></div>${pill(r)}</div>
+  <div class="card qcard">${body}
+   ${can?`<div class="f"><label for="lc_${r.id}">Comment</label><textarea class="in ta" id="lc_${r.id}" placeholder="Needed if you return or decline"></textarea></div>
+   ${er?`<div class="err">${esc(er)}</div>`:''}
+   <div class="actions"><button class="btn btn-p" data-act="lm-approve" data-id="${r.id}">${ic('check',16)} ${label}</button><button class="btn btn-g" data-act="lm-return" data-id="${r.id}">Return to staff</button><button class="btn btn-q" data-act="lm-decline" data-id="${r.id}">Decline</button></div>`:''}</div>`;
+}
+
+/* ---------- Total Rewards ---------- */
+/* ---------- Employee Relations Lead ---------- */
+function vInbox(){
+  if(st.sel) return vCase(REQS.find(r=>r.id===st.sel));
+  const F=[['action','To review',q.er()],['waiting','With others',q.waiting()],['returned','Returned to staff',q.returned()],['done','Issued and closed',q.done()],['all','All',REQS]];
+  const cur=F.find(x=>x[0]===st.filter)||F[0];
+  const rows=[...cur[2]].sort((a,b)=>a.submitted.localeCompare(b.submitted));
+  return `<div class="pg"><h2>Letter Inbox</h2><p>Every reference letter request from OneUI, from Employee Relations on behalf of staff, and from former staff, with the step it is at.</p></div>
+  <div class="filters">${F.map(([k,l,a])=>`<button class="fbtn ${k===cur[0]?'on':''}" data-act="filter" data-k="${k}">${l} <span class="n">${a.length}</span></button>`).join('')}</div>
+  <div class="tablewrap"><table><thead><tr><th>Request</th><th>Staff</th><th>Letter</th><th>Step</th><th>Status</th><th class="num">Age</th></tr></thead><tbody>
+  ${rows.length?rows.map(r=>{const e=EMP[r.emp];return `<tr class="click" data-act="open" data-id="${r.id}" tabindex="0"><td><b>${r.id}</b><span class="s">${sd(r.submitted)}</span></td><td>${esc(e.name)}${seniorFlag(e)}<span class="s">${e.status==='released'?'Former staff':esc(e.position)}</span></td><td>${TYPES[r.type].name}<span class="s">${esc(summary(r))}</span></td><td>${esc(route(r)[r.step].label)}</td><td>${pill(r)}</td><td class="num">${isOpen(r)?ageOf(r.submitted):'–'}</td></tr>`}).join(''):`<tr><td colspan="6">${empty('Nothing here','No requests in this list.')}</td></tr>`}
+  </tbody></table></div>`;
+}
+function missBox(L,r){
+  const k=key(r);
+  if(k==='done'||!L.miss.length) return '';
+  const why=k==='lm'?'The line manager has not approved yet.':k==='tr'?'Total Rewards has not entered the salary yet.':'Fill these before sending for approval.';
+  return `<div class="note warn">${ic('info',16)}<span>Still missing: ${esc(L.miss.join(', '))}. ${why}</span></div>`;
+}
+function vLog(){
+  const rel=Object.entries(EMP).filter(([,e])=>e.status==='released');
+  const er=st.err.log;
+  return `<div class="pg"><h2>Log Former Staff Request</h2><p>Former employees cannot use OneUI. Log requests that arrive by email, letter or walk-in so they follow the same approval, register and history.</p></div>
+  <div class="card"><div class="form">${er?`<div class="err">${esc(er)}</div>`:''}
+   <div class="f"><label for="rl_emp">Former employee</label><select id="rl_emp"><option value="">Search the employee master</option>${rel.map(([id,e])=>`<option value="${id}">${esc(e.name)} · ${e.nid} · released ${sd(e.dor)}</option>`).join('')}</select></div>
+   <div class="f"><label for="rl_type">Letter</label><select id="rl_type"><option value="release_reference">Released Staff Reference Letter (with role summary)</option><option value="release_general">Staff Release General Reference (employment record)</option></select></div>
+   <div class="f"><label for="rl_via">Received via</label><select id="rl_via"><option>Email to Employee Relations</option><option>Walk-in at Head Office</option><option>Letter by post</option></select></div>
+   <div class="f"><label for="rl_note">Note</label><textarea id="rl_note" placeholder="e.g. Needed for a job application"></textarea></div>
+   <div class="actions"><button class="btn btn-p" data-act="log">Log request</button></div></div></div>`;
+}
+function vPositions(){
+  const s=st.search.toLowerCase();
+  const rows=Object.entries(POSITIONS).filter(([id,p])=>!s||(p.title+' '+p.unit+' '+p.summary).toLowerCase().includes(s));
+  return `<div class="pg"><h2>Position Master</h2><p>One approved role summary per position, written from the job description. Every letter for staff in that position uses the same wording, and the Employee Relations Lead can still adjust it on a single letter.</p></div>
+  <div class="f search"><label for="psearch">Search positions</label><input type="text" id="psearch" class="in" value="${esc(st.search)}" placeholder="e.g. Customer Service Assistant"></div>
+  <div class="tablewrap"><table><thead><tr><th>Position</th><th>Role summary used in letters</th><th>JD source</th><th class="num">Staff</th></tr></thead><tbody>
+  ${rows.map(([id,p])=>`<tr><td><b>${esc(p.title)}</b><span class="s">${esc(p.unit)} · <span class="mono">${id}</span></span></td><td>${esc(cap(p.summary))}.</td><td class="mono">${esc(p.jd)}</td><td class="num">${Object.values(EMP).filter(e=>e.pos===id&&e.status==='active').length}</td></tr>`).join('')||`<tr><td colspan="4">${empty('No matching positions','Try another title or unit.')}</td></tr>`}
+  </tbody></table></div>`;
+}
+function vLibrary(){
+  const s=st.search.toLowerCase();
+  const issued=REQS.filter(r=>r.ref).map(r=>{const e=EMP[r.emp];return {ref:r.ref,d:r.issuedAt,staff:e.name,position:e.position,letter:TYPES[r.type].name,by:(signerOf(r)||{}).name||'',id:r.id,text:''}});
+  const past=LIBRARY.map(l=>({ref:l.ref,d:l.d,staff:'',position:l.position+', '+l.unit,letter:TYPES[l.type].name,by:'',text:l.text}));
+  const manual=MANUAL_REG.map(m=>({...m,position:'',by:'',text:m.src}));
+  const rows=[...issued,...manual,...past].filter(x=>!s||Object.values(x).join(' ').toLowerCase().includes(s)).sort((a,b)=>b.ref.localeCompare(a.ref,undefined,{numeric:true}));
+  return `<div class="pg"><h2>Letter Library</h2><p>Every issued letter and its reference number. The Employee Relations Lead uses earlier letters as a reference for wording and role descriptions. Numbers are given only on approval, so none are skipped or reused.</p></div>
+  <div class="card split"><div><span class="mono">Next reference number</span><div style="font-size:22px;font-weight:700" class="num">BML/HR-${nextRef}/2026</div></div><div class="f search" style="flex:1;min-width:220px"><label for="lsearch">Search letters</label><input type="text" id="lsearch" class="in" value="${esc(st.search)}" placeholder="Name, position, reference or wording"></div></div>
+  <div class="tablewrap"><table><thead><tr><th>Reference</th><th>Date</th><th>Letter</th><th>Staff and position</th><th>Wording or source</th></tr></thead><tbody>
+  ${rows.map(x=>`<tr ${x.id?`class="click" data-act="open" data-id="${x.id}" tabindex="0"`:''}><td class="num"><b>${x.ref}</b></td><td>${sd(x.d)}</td><td>${x.letter}</td><td>${esc(x.staff)}${x.staff&&x.position?'<span class="s">':''}${esc(x.position)}${x.staff&&x.position?'</span>':''}</td><td>${x.id?`Issued under ${esc(x.by)}`:esc(x.text)}</td></tr>`).join('')||`<tr><td colspan="5">${empty('No matching letters','Try another search.')}</td></tr>`}
+  </tbody></table></div>`;
+}
+
+/* ---------- approvers ---------- */
+function signerOf(r){
+  const s=r.draft.signer;
+  return s==='ere'||s==='head'?SIGNERS[s]:null;
+}
+function filterChips(opts){return `<div class="filters">${opts.map(([k,l,n])=>`<button class="fbtn ${st.tf===k?'on':''}" data-act="tfilter" data-k="${k}">${l} <span class="n">${n}</span></button>`).join('')}</div>`}
+function letterToggle(r,title,highlight){
+  const L=renderLetter(r);
+  return `<div class="card"><div class="draftbar"><div><h3 style="margin:0">${title}</h3><span class="mono">${esc(tplName(r))}</span></div><div class="actions">${key(r)==='done'&&st.role==='staff'||key(r)==='done'&&r.emp===actor().emp?`<button class="btn btn-g btn-s" data-act="pdf">${ic('download',16)} Download PDF</button>`:''}<button class="btn btn-g btn-s" data-act="toggleletter">${st.showLetter?'Hide letter':'View letter'}</button></div></div>
+   ${st.showLetter?`<div class="paperwrap"><div class="paper ${highlight?'show-fields':''}">${L.html}</div></div>`:''}</div>`;
+}
+function vLetters(){
+  if(st.form) return vForm();
+  if(st.sel) return vStaffDetail(REQS.find(r=>r.id===st.sel));
+  const mine=q.mine().sort((a,b)=>b.id.localeCompare(a.id));
+  return `<div class="pg"><h2>Reference Letters</h2></div>
+  <div class="card banner"><div class="tile t-red">${ic('file')}</div><div class="txt"><b>Looking for a reference letter? We’re happy to help!</b><span>Letters will be issued within 3 working days.</span></div><button class="btn btn-p" data-act="new">Request a letter</button></div>
+  <div class="seclabel">Your requests</div>
+  <div class="tablewrap"><table class="slim"><thead><tr><th>Letter</th><th>Request</th><th>Submitted</th><th>Status</th><th></th></tr></thead><tbody>
+  ${mine.length?mine.map(r=>`<tr class="click" data-act="open" data-id="${r.id}" tabindex="0"><td><div class="cell">${tile(r)}<b>${TYPES[r.type].name}</b></div></td><td class="num">${r.id}</td><td>${sd(r.submitted)}</td><td>${pill(r,true)}</td><td class="chevcell">${ic('chevR')}</td></tr>`).join(''):`<tr><td colspan="5">${empty('No letter requests yet','Use Request a letter to start one.')}</td></tr>`}
+  </tbody></table></div>`;
+}
+function vStaffDetail(r){
+  const done=key(r)==='done'&&!r.closed;
+  return `<div><button class="back" data-act="back">${ic('chevL',16)} All requests</button></div>
+  <div class="split"><div class="pg"><h2>${TYPES[r.type].name}</h2><p>${r.id} · submitted ${sd(r.submitted)}</p></div>${pill(r,true)}</div>
+  ${r.returned?`<div class="card" style="box-shadow:inset 4px 0 0 var(--red)"><h3>Returned by ${esc(r.returned.by)}</h3><p style="margin:0 0 12px">${esc(r.returned.note)}</p><button class="btn btn-p" data-act="edit" data-id="${r.id}">Update and resubmit</button></div>`:''}
+  ${r.closed==='declined'?`<div class="card" style="box-shadow:inset 4px 0 0 var(--red)"><h3>Declined by ${esc(r.closeBy)}</h3><p style="margin:0">${esc(r.closeNote)}</p></div>`:''}
+  ${done&&r.delivery==='printed'?`<div class="note">${ic('info',16)}<span>Your printed copy is ready at Employee Relations, Head Office. Bring your staff ID.</span></div>`:''}
+  ${done?letterToggle(r,'Your letter',false):''}
+  <div class="case">
+   <div class="stack"><div class="card"><h3>Progress</h3>${staffTimeline(r)}</div>
+   ${!done&&isOpen(r)?`<div class="card"><h3>What happens next</h3><p style="margin:0;color:var(--muted)">${TYPES[r.type].route?esc(TYPES[r.type].route)+' ':''}Letters will be issued within 3 working days. You'll get a OneUI notification when yours is ready.</p></div>`:''}</div>
+   <div class="stack"><div class="card"><h3>Your request</h3>${fieldRows(r,true)}</div>
+   ${isOpen(r)?`<div><button class="btn btn-q" data-act="cancel" data-id="${r.id}">Cancel this request</button></div>`:''}</div>
+  </div>`;
+}
+function vTeam(){
+  if(st.sel) return vTeamDetail(REQS.find(r=>r.id===st.sel));
+  const mineTeam=REQS.filter(r=>EMP[r.emp].mgr===actor().emp&&route(r).some(s=>s.k==='lm'));
+  const pending=q.team();
+  const approved=mineTeam.filter(r=>r.trail.some(t=>t.who===actor().name&&/^Approved/.test(t.what)));
+  const list=st.tf==='approved'?approved:pending;
+  return `<div class="pg"><h2>Team Approvals</h2><p>Visa and academic excuse letters requested by your team that need your approval.</p></div>
+  ${filterChips([['pending','Pending',pending.length],['approved','Approved',approved.length]])}
+  <div class="tablewrap"><table class="slim"><thead><tr><th>Request</th><th>Staff</th><th>Letter</th><th>Submitted</th><th>Status</th><th></th></tr></thead><tbody>
+  ${list.length?list.map(r=>`<tr class="click" data-act="open" data-id="${r.id}" tabindex="0"><td class="num"><b>${r.id}</b></td><td>${esc(EMP[r.emp].name)}</td><td>${TYPES[r.type].name}</td><td>${sd(r.submitted)}</td><td>${st.tf==='approved'?'<span class="pill p-green">Approved</span>':'<span class="pill p-amber">Pending</span>'}</td><td class="chevcell">${ic('chevR')}</td></tr>`).join(''):`<tr><td colspan="6">${empty(st.tf==='approved'?'Nothing approved yet':'Nothing waiting for you','Requests from your team appear here.')}</td></tr>`}
+  </tbody></table></div>`;
+}
+function vSalary(){
+  if(st.sel) return vSalaryDetail(REQS.find(r=>r.id===st.sel));
+  const pending=q.tr(),done=REQS.filter(r=>r.salary&&r.salary.by===actor().name);
+  const list=st.tf==='done'?done:pending;
+  return `<div class="pg"><h2>Salary Information</h2><p>Letters that need the staff member’s gross salary.</p></div>
+  ${filterChips([['pending','To enter',pending.length],['done','Entered by you',done.length]])}
+  <div class="tablewrap"><table class="slim"><thead><tr><th>Staff ID</th><th>Staff</th><th>Letter</th><th>Request</th><th>Status</th><th></th></tr></thead><tbody>
+  ${list.length?list.map(r=>`<tr class="click" data-act="open" data-id="${r.id}" tabindex="0"><td class="num"><b>${EMP[r.emp].sid}</b></td><td>${esc(EMP[r.emp].name)}</td><td>${TYPES[r.type].name}</td><td class="num">${r.id}</td><td>${st.tf==='done'?`<span class="pill p-green">${money(r.salary.amount)}</span>`:'<span class="pill p-amber">To enter</span>'}</td><td class="chevcell">${ic('chevR')}</td></tr>`).join(''):`<tr><td colspan="6">${empty('Nothing here','New salary requests appear here.')}</td></tr>`}
+  </tbody></table></div>`;
+}
+function vSalaryDetail(r){
+  const e=EMP[r.emp],er=st.err[r.id],can=isOpen(r)&&key(r)==='tr';
+  return `<div><button class="back" data-act="back">${ic('chevL',16)} Salary Information</button></div>
+  <div class="pg"><h2>${esc(e.name)}</h2><p>${r.id}</p></div>
+  <div class="card qcard" style="max-width:640px"><dl class="kv"><dt>Staff ID</dt><dd class="num">${e.sid}</dd><dt>Name</dt><dd>${esc(e.name)}</dd><dt>Letter</dt><dd>${TYPES[r.type].name}</dd></dl>
+   ${can?`<div class="two"><div class="f"><label for="ta_${r.id}">Gross monthly salary (MVR)</label><input type="number" min="0" step="0.01" id="ta_${r.id}" class="in" placeholder="e.g. 21500.00"></div></div>
+   ${er?`<div class="err">${esc(er)}</div>`:''}
+   <div class="actions"><button class="btn btn-p" data-act="tr-confirm" data-id="${r.id}">Save salary</button></div>`
+   :r.salary?`<dl class="kv"><dt>Gross monthly salary</dt><dd class="num">${money(r.salary.amount)}</dd><dt>Entered</dt><dd>${sd(r.salary.d)}</dd></dl>`:''}</div>`;
+}
+function signerEditor(r){
+  const d=r.draft,e=EMP[r.emp];
+  const opt=(v,l)=>`<option value="${v}" ${d.signer===v?'selected':''}>${l}</option>`;
+  return `<div class="f"><label for="d_signer">Signing authority</label><span class="mono">The letter goes to this person for approval and is issued under their name.</span>
+   ${isSenior(e)?`<div class="note warn">${ic('info',16)}<span>Requested by a Director / Chief. Choose the signing authority.</span></div>`:''}
+   <select id="d_signer" data-d="signer">${d.signer===''?opt('','Choose the signing authority'):''}${opt('ere',SIGNERS.ere.title+' · '+SIGNERS.ere.name)}${opt('head',SIGNERS.head.title+' · '+SIGNERS.head.name)}</select></div>`;
+}
+function vCase(r){
+  const e=EMP[r.emp],k=key(r),canEdit=st.role==='erl'&&isOpen(r)&&!r.returned&&k==='er';
+  const L=renderLetter(r),pos=POSITIONS[e.pos];
+  const ed=[];
+  if(canEdit){
+    if('addressee' in r.draft) ed.push(`<div class="f"><label for="d_addressee">Embassy address</label><span class="mono">From the embassy directory. Edit if needed.</span><textarea class="in ta" id="d_addressee" data-d="addressee">${esc(r.draft.addressee)}</textarea></div>`);
+    if('recipient' in r.draft) ed.push(`<div class="f"><label for="d_recipient">Recipient and address</label><textarea class="in ta" id="d_recipient" data-d="recipient">${esc(r.draft.recipient)}</textarea></div>`);
+    if('jd' in r.draft) ed.push(`<div class="f"><label for="d_jd">Role summary</label><span class="mono">Source: ${esc(r.draft.jdSource)} · ${esc(pos.jd)}</span><textarea class="in ta" id="d_jd" data-d="jd">${esc(r.draft.jd)}</textarea>${r.draft.jd!==pos.summary?`<div><button class="btn btn-g btn-s" data-act="jdreset" data-id="${r.id}">Use position master wording</button></div>`:''}</div>`);
+    if('extra' in r.draft) ed.push(`<div class="f"><label for="d_extra">Additional paragraph</label><span class="mono">From the staff request. Edit the wording or clear it.</span><textarea class="in ta" id="d_extra" data-d="extra">${esc(r.draft.extra)}</textarea></div>`);
+  }
+  const lib='jd' in r.draft?LIBRARY.filter(l=>l.position===e.position):[];
+  const er=st.err[r.id];
+  const canReturn=!r.type.startsWith('release');
+  const sg=signerOf(r);
+  const waitMsg=!canEdit&&isOpen(r)?(r.returned?`Returned to ${e.name} for changes.`:`Now at: ${route(r)[r.step].label}${k==='appr'&&sg?` (${sg.title})`:''}.`):'';
+  const draftCard=st.showLetter?`<div class="card">
+    <div class="draftbar"><div><h3 style="margin:0">${k==='done'?'Issued letter':'Draft letter'}</h3><span class="mono">${esc(tplName(r))}</span></div><div class="actions">${k!=='done'?'<span class="legend"><i></i> Filled from records</span>':''}<button class="btn btn-g btn-s" data-act="toggleletter">Hide letter</button></div></div>
+    ${ed.length?`<div class="editors">${ed.join('')}</div>`:''}
+    <div class="paperwrap"><div class="paper ${k!=='done'?'show-fields':''}" id="paper">${L.html}</div></div>
+    <div id="missBox" style="margin-top:12px">${missBox(L,r)}</div></div>`
+   :`<div class="card"><div class="draftbar" style="margin:0"><div><h3 style="margin:0">${k==='done'?'Issued letter':'Draft letter'}</h3><span class="mono">${esc(tplName(r))}${r.ref?' · '+r.ref:''}</span></div><button class="btn btn-g" data-act="toggleletter">${canEdit?'Open draft to review and edit':'View letter'}</button></div></div>`;
+  return `<div><button class="back" data-act="back">${ic('chevL',16)} Letter Inbox</button></div>
+  <div class="split"><div class="pg"><h2>${esc(e.name)} · ${TYPES[r.type].name}</h2><p>${r.id} · submitted ${sd(r.submitted)} · ${esc(route(r)[r.step].label)}</p></div>${pill(r)}</div>
+  ${r.apprReturn&&k==='er'?`<div class="card" style="box-shadow:inset 4px 0 0 var(--red)"><h3>Returned by ${esc(r.apprReturn.by)}</h3><p style="margin:0">${esc(r.apprReturn.note)}</p></div>`:''}
+  ${waitMsg?`<div class="note">${ic('info',16)}<span>${esc(waitMsg)}</span></div>`:''}
+  <div class="case">
+   <div class="stack">
+    <div class="card"><h3>Request</h3>${fieldRows(r,false)}</div>
+    <div class="card"><h3>Staff information</h3><span class="mono" style="display:block;margin:-6px 0 10px">Linked from the employee master</span><dl class="kv"><dt>Staff ID</dt><dd class="num">${e.sid}</dd><dt>Name</dt><dd>${e.sal} ${esc(e.name)}${seniorFlag(e)}</dd><dt>NID</dt><dd>${e.nid}</dd><dt>Position</dt><dd>${esc(e.position)}</dd><dt>Unit</dt><dd>${esc(e.unit)}</dd><dt>Department</dt><dd>${esc(e.dept)}</dd><dt>Joined</dt><dd>${sd(e.doj)}</dd>${e.dor?`<dt>Released</dt><dd>${sd(e.dor)}</dd>`:`<dt>Line manager</dt><dd>${esc(mgrName(e))}</dd>`}<dt>Employment</dt><dd>${e.etype}</dd></dl></div>
+    ${r.salary?`<div class="card"><h3>Salary from Total Rewards</h3><dl class="kv"><dt>Gross monthly</dt><dd class="num">${money(r.salary.amount)}</dd><dt>Entered by</dt><dd>${esc(r.salary.by)}, ${sd(r.salary.d)}</dd></dl></div>`:''}
+    ${canEdit&&st.showLetter&&'jd' in r.draft?`<div class="card"><h3>Earlier letters for ${esc(e.position)}</h3>${lib.length?`<div class="lib">${lib.map(l=>{const c=coreOf(l.text);return `<div class="libitem"><q>${esc(l.text)}</q><div class="meta"><span class="mono">${l.ref} · ${esc(l.unit)} · ${TYPES[l.type].name}</span>${c?`<button class="btn btn-g btn-s" data-act="usejd" data-id="${r.id}" data-ref="${l.ref}">Use this wording</button>`:''}</div></div>`}).join('')}</div>`:`<p style="margin:0;color:var(--muted)">No earlier letters for this position yet. The position master wording is used.</p>`}</div>`:''}
+    <div class="card"><h3>History</h3>${trailHTML(r)}</div>
+   </div>
+   <div class="stack">
+    ${draftCard}
+    ${canEdit?`<div class="card"><h3>Send for approval</h3><div class="editors">${signerEditor(r)}</div>
+     ${canReturn?`<div class="f"><label for="ern">Note to staff</label><textarea class="in ta" id="ern" placeholder="Needed only if you return the request"></textarea></div>`:''}${er?`<div class="err" style="margin-top:10px">${esc(er)}</div>`:''}
+     <div class="actions" style="margin-top:12px"><button class="btn btn-p" data-act="er-send" data-id="${r.id}" ${L.miss.length?'disabled':''}>Send for approval</button>${canReturn?`<button class="btn btn-g" data-act="er-return" data-id="${r.id}">Return to staff</button>`:''}</div>
+     ${L.miss.length&&!st.showLetter?`<div class="note warn" style="margin-top:12px">${ic('info',16)}<span>Still missing: ${esc(L.miss.join(', '))}.</span></div>`:''}</div>`:''}
+   </div>
+  </div>`;
+}
+function vApprove(){
+  if(st.sel) return vApproveDetail(REQS.find(r=>r.id===st.sel));
+  const pending=q.appr(),done=REQS.filter(r=>r.signedBy===st.role&&r.ref);
+  const list=st.tf==='done'?done:pending;
+  return `<div class="pg"><h2>Letters to Approve</h2><p>Letters reviewed by the Employee Relations Lead and sent to you as the signing authority.</p></div>
+  ${filterChips([['pending','To approve',pending.length],['done','Approved by you',done.length]])}
+  <div class="tablewrap"><table class="slim"><thead><tr><th>Request</th><th>Staff</th><th>Letter</th><th>Submitted</th><th>Status</th><th></th></tr></thead><tbody>
+  ${list.length?list.map(r=>`<tr class="click" data-act="open" data-id="${r.id}" tabindex="0"><td class="num"><b>${r.id}</b></td><td>${esc(EMP[r.emp].name)}${seniorFlag(EMP[r.emp])}</td><td>${TYPES[r.type].name}</td><td>${sd(r.submitted)}</td><td>${pill(r)}</td><td class="chevcell">${ic('chevR')}</td></tr>`).join(''):`<tr><td colspan="6">${empty(st.tf==='done'?'Nothing approved yet':'Nothing to approve','Letters appear here once the Employee Relations Lead sends them to you.')}</td></tr>`}
+  </tbody></table></div>`;
+}
+function vApproveDetail(r){
+  const e=EMP[r.emp],er=st.err[r.id],L=renderLetter(r),can=isOpen(r)&&key(r)==='appr'&&r.draft.signer===st.role;
+  return `<div><button class="back" data-act="back">${ic('chevL',16)} Letters to Approve</button></div>
+  <div class="split"><div class="pg"><h2>${esc(e.name)} · ${TYPES[r.type].name}</h2><p>${r.id} · submitted ${sd(r.submitted)}</p></div>${pill(r)}</div>
+  <div class="case">
+   <div class="stack"><div class="card"><h3>Request</h3>${fieldRows(r,false)}</div>
+    <div class="card"><h3>Staff</h3><dl class="kv"><dt>Staff ID</dt><dd class="num">${e.sid}</dd><dt>Name</dt><dd>${esc(e.name)}${seniorFlag(e)}</dd><dt>Position</dt><dd>${esc(e.position)}</dd><dt>Unit</dt><dd>${esc(e.unit)}</dd>${r.salary?`<dt>Gross salary</dt><dd class="num">${money(r.salary.amount)} (entered by ${esc(r.salary.by)})</dd>`:''}</dl></div>
+    <div class="card"><h3>History</h3>${trailHTML(r)}</div></div>
+   <div class="stack">${letterToggle(r,key(r)==='done'?'Issued letter':'Letter for approval',key(r)!=='done')}
+    ${can?`<div class="card"><h3>Your decision</h3><div class="f"><label for="en_${r.id}">Comment</label><textarea class="in ta" id="en_${r.id}" placeholder="Needed if you return it to the Employee Relations Lead"></textarea></div>
+     ${er?`<div class="err" style="margin-top:10px">${esc(er)}</div>`:''}
+     <div class="actions" style="margin-top:12px"><button class="btn btn-p" data-act="appr-ok" data-id="${r.id}" ${L.miss.length?'disabled':''}>${ic('check',16)} Approve and issue</button><button class="btn btn-g" data-act="appr-return" data-id="${r.id}">Return to Employee Relations Lead</button></div></div>`:''}
+   </div>
+  </div>`;
+}
+
+function render(){
+  renderShell();
+  const V={letters:vLetters,team:vTeam,inbox:vInbox,behalf:vBehalf,log:vLog,positions:vPositions,library:vLibrary,salary:vSalary,approve:vApprove}[st.view];
+  document.getElementById('content').innerHTML=V();
+}
+
+/* ---------- actions ---------- */
+let tt;
+function toast(m){const h=document.getElementById('toastHost');h.innerHTML=`<div class="toast" role="status">${esc(m)}</div>`;clearTimeout(tt);tt=setTimeout(()=>h.innerHTML='',3800)}
+const R=id=>REQS.find(r=>r.id===id);
+const log=(r,what)=>r.trail.push(T(TODAY,actor().name,what));
+const val=id=>{const el=document.getElementById(id);return el?el.value.trim():''};
+function captureForm(){document.querySelectorAll('[data-f]').forEach(el=>st.form.values[el.dataset.f]=el.type==='checkbox'?el.checked:el.value)}
+function advance(r,what){r.step++;log(r,what)}
+const newForm=forEmp=>({forEmp:forEmp||null,type:null,values:{},dates:[],attendees:[],errors:[],editing:null});
+
+function submitForm(){
+  captureForm();
+  const F=st.form,V=F.values,E=[];
+  const official=F.type==='visa'&&V.trip==='official';
+  if(F.type==='academic_excuse'){if(!V.institution)E.push('Choose the institution.');if(!F.dates.length)E.push('Add at least one class date.');if(!V.reason)E.push('Explain the work reason for the line manager.')}
+  if(F.type==='academic_reference'&&!V.institution)E.push('Choose the institution.');
+  if(V.institution==='Other'&&!(V.institutionOther||'').trim())E.push('Type the institution name.');
+  if(F.type==='financial_reference'&&!V.purpose)E.push('Say what the letter is for.');
+  if(F.type==='visa'){
+    if(!V.embassy)E.push('Choose the embassy the letter is for.');
+    if(V.embassy==='Other'&&!(V.embassyOther||'').trim())E.push('Type the embassy name.');
+    if(official){if(!V.event)E.push('Enter the event or meeting.');if(!V.location)E.push('Enter where it is held.')}
+    if(!V.start||!V.end)E.push(official?'Enter both event dates.':'Enter both travel dates.');else if(V.end<V.start)E.push('The end date is before the start date.');else if(V.start<=TODAY)E.push('Travel must start after today.');
+    if(!V.passport)E.push('Enter the passport number.');
+  }
+  if(F.type!=='visa')V.delivery='digital';
+  F.errors=E; if(E.length) return render();
+  const a=actor(),empId=F.forEmp||a.emp,e=EMP[empId];
+  const fields={...V};delete fields.delivery;
+  if(fields.institution==='Other')fields.institution=fields.institutionOther.trim();delete fields.institutionOther;
+  if(fields.embassy==='Other')fields.embassy=fields.embassyOther.trim();delete fields.embassyOther;
+  if(F.type==='academic_excuse')fields.dates=[...F.dates].sort();
+  if(F.type==='visa'){fields.trip=fields.trip||'annual';if(official){fields.includeSalary=false;fields.attendees=[{emp:empId,passport:V.passport},...F.attendees]}}
+  let r;
+  if(F.editing){r=R(F.editing);r.fields=fields;r.delivery=V.delivery||'digital';r.step=1;r.returned=null;r.draft=makeDraft(r.type,e,fields);delete r.salary;log(r,'Updated and resubmitted the request')}
+  else{r=mk({id:`RL-2026-${String(nextReq++).padStart(4,'0')}`,type:F.type,emp:empId,step:1,submitted:TODAY,delivery:V.delivery||'digital',fields,trail:[T(TODAY,a.name,F.forEmp?`Submitted on behalf of ${e.name}`:'Submitted the request in OneUI')]});REQS.push(r)}
+  st.form=null;st.sel=r.id;
+  if(F.forEmp){st.view='inbox';render();toast(`${r.id} created for ${e.name}.`)}
+  else{render();toast(`${r.id} sent. Letters will be issued within 3 working days.`)}
+}
+function issue(r){
+  r.signedBy=r.draft.signer;
+  r.ref=`BML/HR-${nextRef++}/2026`;r.issuedAt=TODAY;r.step=route(r).length-1;
+  log(r,`Approved and issued ${r.ref}`);
+}
+
+document.addEventListener('click',ev=>{
+  const t=ev.target.closest('[data-act]');if(!t)return;
+  const act=t.dataset.act,id=t.dataset.id;
+  switch(act){
+   case 'nav':st.view=t.dataset.v;st.sel=null;st.tf='pending';st.showLetter=false;st.form=null;st.err={};st.search='';render();break;
+   case 'stub':toast(`${t.dataset.l} is part of your existing Employee Relations app and is not in this prototype.`);break;
+   case 'theme':{const cur=document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.dataset.theme=cur==='dark'?'light':'dark';break}
+   case 'bell':{const n=todoCount(st.role);if(n){st.view=ROLES[st.role].home;st.sel=null;st.form=null;if(st.role==='erl')st.filter='action';render()}toast(n?`${n} item${n>1?'s':''} waiting for you.`:'No new notifications.');break}
+   case 'new':st.form=newForm();st.sel=null;render();break;
+   case 'behalf-go':{const emp=val('bh_emp');if(!emp){st.err.behalf='Choose the staff member.';return render()}delete st.err.behalf;st.form=newForm(emp);render();break}
+   case 'pick':st.form.type=t.dataset.t;st.form.values={delivery:'digital',earlier:false,includeSalary:false,trip:'annual',sponsored:true};st.form.errors=[];st.form.attendees=[];render();break;
+   case 'pickagain':st.form=newForm(st.form.forEmp);render();break;
+   case 'adddate':{captureForm();const d=val('newDate');if(!d){toast('Pick a date first.');break}if(d>TODAY){toast('Class dates must be today or earlier.');break}if(!st.form.dates.includes(d))st.form.dates.push(d);st.form.dates.sort();render();document.getElementById('newDate')?.focus();break}
+   case 'rmdate':captureForm();st.form.dates=st.form.dates.filter(x=>x!==t.dataset.d);render();break;
+   case 'addatt':{captureForm();const emp=val('attEmp'),pp=val('attPass');if(!emp||!pp){toast('Choose a colleague and enter their passport number.');break}st.form.attendees.push({emp,passport:pp});render();break}
+   case 'rmatt':captureForm();st.form.attendees=st.form.attendees.filter(a=>a.emp!==t.dataset.e);render();break;
+   case 'submit':submitForm();break;
+   case 'edit':{const r=R(id),vals={...r.fields,delivery:r.delivery};
+     if(vals.institution&&!INSTITUTIONS.includes(vals.institution)){vals.institutionOther=vals.institution;vals.institution='Other'}
+     if(vals.embassy&&!EMBASSIES[vals.embassy]){vals.embassyOther=vals.embassy;vals.embassy='Other'}
+     st.form={...newForm(),type:r.type,values:vals,dates:[...(r.fields.dates||[])],attendees:(r.fields.attendees||[]).slice(1),editing:id};render();break}
+   case 'cancel':{const r=R(id);if(t.dataset.confirm!=='1'){t.dataset.confirm='1';t.textContent='Select again to cancel the request';break}r.closed='cancelled';log(r,'Cancelled the request');render();toast(`${r.id} cancelled.`);break}
+   case 'pdf':toast('In the live app this downloads the PDF from OneUI.');break;
+   case 'toggleletter':st.showLetter=!st.showLetter;render();break;
+   case 'tfilter':st.tf=t.dataset.k;render();break;
+   case 'open':st.sel=id;st.showLetter=false;if(st.view==='library')st.view='inbox';render();break;
+   case 'openinbox':st.view='inbox';st.sel=id;render();break;
+   case 'back':st.showLetter=false;if(st.form){st.form=null}else st.sel=null;st.err={};render();break;
+   case 'filter':st.filter=t.dataset.k;render();break;
+   case 'lm-approve':{const r=R(id),c=val('lc_'+id),f=r.fields;
+     if(r.type==='visa'&&f.trip==='official') advance(r,`Approved the official trip, ${sd(f.start)} to ${sd(f.end)}`);
+     else if(r.type==='visa'){const a=val('lf_'+id),b=val('lt_'+id);if(!a||!b||b<a){st.err[id]='Enter a valid leave period.';return render()}f.leaveFrom=a;f.leaveTo=b;advance(r,`Approved leave duration ${sd(a)} to ${sd(b)}`)}
+     else{const ds=[...document.querySelectorAll(`[data-lmdate="${id}"]:checked`)].map(x=>x.value);if(!ds.length){st.err[id]='Tick at least one date, or decline the request.';return render()}f.approvedDates=ds;advance(r,`Approved ${ds.length} of ${f.dates.length} class dates`)}
+     if(c)log(r,`Comment: ${c}`);delete st.err[id];st.sel=null;render();toast(`${r.id} approved and sent on to ${route(r)[r.step].owner}.`);break}
+   case 'lm-return':case 'lm-decline':{const r=R(id),c=val('lc_'+id);if(!c){st.err[id]=`Add a comment so ${EMP[r.emp].name} knows why.`;return render()}
+     if(act==='lm-return'){r.returned={by:actor().name,note:c};log(r,`Returned to staff: ${c}`)}else{r.closed='declined';r.closeBy=actor().name;r.closeNote=c;log(r,`Declined: ${c}`)}
+     delete st.err[id];st.sel=null;render();toast(`${r.id} ${act==='lm-return'?'returned to':'declined for'} ${EMP[r.emp].name}.`);break}
+   case 'tr-confirm':{const r=R(id),amt=parseFloat(val('ta_'+id));
+     if(!(amt>0)){st.err[id]='Enter the gross monthly salary.';return render()}
+     r.salary={amount:amt,by:actor().name,d:TODAY};advance(r,`Entered gross salary ${money(amt)}`);delete st.err[id];st.sel=null;render();toast(`Salary saved for ${EMP[r.emp].name}.`);break}
+   case 'usejd':{const r=R(id),l=LIBRARY.find(x=>x.ref===t.dataset.ref);r.draft.jd=coreOf(l.text);r.draft.jdSource='Earlier letter '+l.ref;render();toast(`Wording from ${l.ref} added to the draft.`);break}
+   case 'jdreset':{const r=R(id);r.draft.jd=POSITIONS[EMP[r.emp].pos].summary;r.draft.jdSource='Position master';render();break}
+   case 'er-send':{const r=R(id);r.apprReturn=null;advance(r,'Reviewed the draft and sent it for approval');render();toast(`${r.id} sent for approval.`);break}
+   case 'er-return':{const r=R(id),c=val('ern');if(!c){st.err[id]='Write a note to the staff member before returning.';return render()}r.returned={by:actor().name+', Employee Relations',note:c};log(r,`Returned to staff: ${c}`);delete st.err[id];render();toast(`${r.id} returned to ${EMP[r.emp].name}.`);break}
+   case 'appr-ok':{const r=R(id),c=val('en_'+id);if(c)log(r,`Comment: ${c}`);issue(r);delete st.err[id];st.sel=null;render();toast(`Issued ${r.ref}. ${EMP[r.emp].name} can now view the letter.`);break}
+   case 'appr-return':{const r=R(id),c=val('en_'+id);if(!c){st.err[id]='Add a comment for the Employee Relations Lead.';return render()}r.step--;r.apprReturn={by:actor().name,note:c};log(r,`Returned to Employee Relations Lead: ${c}`);delete st.err[id];st.sel=null;render();toast(`${r.id} returned to the Employee Relations Lead.`);break}
+   case 'log':{const emp=val('rl_emp');if(!emp){st.err.log='Choose the former employee.';return render()}
+     const type=val('rl_type'),via=val('rl_via');
+     const r=mk({id:`RL-2026-${String(nextReq++).padStart(4,'0')}`,type,emp,step:1,submitted:TODAY,delivery:'digital',via,fields:{note:val('rl_note')},trail:[T(TODAY,actor().name,`Logged a request received by ${via.toLowerCase()}`)]});
+     REQS.push(r);delete st.err.log;st.view='inbox';st.sel=r.id;render();toast(`${r.id} logged.`);break}
+  }
+});
+document.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&ev.target.matches('tr[data-act]'))ev.target.click()});
+document.addEventListener('input',ev=>{
+  const el=ev.target;
+  if(el.id==='psearch'||el.id==='lsearch'){st.search=el.value;const pos=el.selectionStart;render();const n=document.getElementById(el.id);n.focus();n.setSelectionRange(pos,pos);return}
+  const k=el.dataset.d;if(!k||!st.sel||k==='signer')return;
+  const r=R(st.sel);r.draft[k]=el.value;if(k==='jd')r.draft.jdSource='Edited by Employee Relations Lead';
+  const L=renderLetter(r);document.getElementById('paper').innerHTML=L.html;document.getElementById('missBox').innerHTML=missBox(L,r);
+  document.querySelectorAll('[data-act="er-send"]').forEach(b=>b.disabled=!!L.miss.length);
+});
+document.addEventListener('change',ev=>{
+  const id=ev.target.id;
+  if(st.form&&['institution','embassy','trip'].includes(id)){captureForm();render();const f=document.getElementById(ev.target.value==='Other'?id+'Other':id);f&&f.focus()}
+  if(id==='d_signer'&&st.sel){R(st.sel).draft.signer=ev.target.value;render()}
+});
+document.getElementById('roleSel').addEventListener('change',ev=>{st.role=ev.target.value;st.view=ROLES[st.role].home;st.sel=null;st.form=null;st.err={};st.filter='action';st.search='';st.tf='pending';st.showLetter=false;render()});
+render();
+</script>
