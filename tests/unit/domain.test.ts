@@ -93,7 +93,7 @@ describe("letters (spec §7)", () => {
   it("issued Academic Reference renders without missing fields", () => {
     const t = letterText(renderLetter(w, R("RL-2026-0138")));
     expect(t).toContain("This is to confirm that Ms. Aminath Shifa (NID: A098765) has been employed with Bank of Maldives PLC since 13th March 2016.");
-    expect(t).toContain("Fathimath Rayya Hilmy");
+    expect(t).toContain("ER & Engagement Manager (Sample)");
   });
   it("financial reference is missing the salary until Total Rewards enters it, and a signatory until one is configured", () => {
     expect(renderLetter(w, R("RL-2026-0139")).miss).toEqual(["signatory (template signature in Settings)", "gross salary from Total Rewards"]);

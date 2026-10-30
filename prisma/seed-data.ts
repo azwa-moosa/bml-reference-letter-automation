@@ -41,8 +41,8 @@ export const EMP: Record<string, any>={
  E9:{name:'Ismail Waheed',first:'Ismail',sal:'Mr.',g:'m',nid:'A045512',pos:'CSD-DIR',dept:'Customer Service Division',div:'Customer Service Division',doj:'2011-05-15',etype:'Permanent',status:'active',mgrName:'Deputy CEO'},
  E10:{name:'Shaheem Ali',first:'Shaheem',sal:'Mr.',g:'m',nid:'A120987',pos:'PC-ERL',dept:'People & Culture',div:'People & Culture',doj:'2017-09-03',etype:'Permanent',status:'active',mgr:'E12'},
  E11:{name:'Aishath Reema',first:'Reema',sal:'Ms.',g:'f',nid:'A143322',pos:'PC-TRO',dept:'People & Culture',div:'People & Culture',doj:'2019-02-17',etype:'Permanent',status:'active',mgr:'E13'},
- E12:{name:'Fathimath Rayya Hilmy',first:'Rayya',sal:'Ms.',g:'f',nid:'A076541',pos:'PC-ERM',dept:'People & Culture',div:'People & Culture',doj:'2013-04-07',etype:'Permanent',status:'active',mgr:'E13'},
- E13:{name:'Mariyam Shazna',first:'Shazna',sal:'Ms.',g:'f',nid:'A061209',pos:'PC-HTR',dept:'People & Culture',div:'People & Culture',doj:'2008-10-12',etype:'Permanent',status:'active',mgrName:'Director, People & Culture'}
+ E12:{name:'ER & Engagement Manager (Sample)',first:'ER Manager',sal:'Ms.',g:'f',nid:'A076541',pos:'PC-ERM',dept:'People & Culture',div:'People & Culture',doj:'2013-04-07',etype:'Permanent',status:'active',mgr:'E13'},
+ E13:{name:'Head of TR & ER (Sample)',first:'Head of TR & ER',sal:'Ms.',g:'f',nid:'A061209',pos:'PC-HTR',dept:'People & Culture',div:'People & Culture',doj:'2008-10-12',etype:'Permanent',status:'active',mgrName:'Director, People & Culture'}
 };
 export const SIDS: Record<string,string>={E1:'10452',E2:'07318',E3:'13207',E4:'09166',E5:'08241',E6:'11873',E7:'09902',E8:'12655',E9:'06115',E10:'10988',E11:'12034',E12:'08877',E13:'05521'};
 export const REQS: any[]=[
@@ -58,7 +58,7 @@ export const REQS: any[]=[
  mk({id:'RL-2026-0133',type:'job_opportunity',emp:'E4',step:3,submitted:'2026-10-19',delivery:'digital',fields:{earlier:false,includeSalary:true,extra:''},salary:{amount:18950,eff:'2026-01-01',by:'Aishath Reema',d:'2026-10-20'},trail:[T('2026-10-19','Mariyam Zeena','Submitted the request in OneUI'),T('2026-10-20','Aishath Reema','Entered gross salary MVR 18,950.00'),T('2026-10-22','Shaheem Ali','Reviewed the draft and sent it for approval')]}),
  mk({id:'RL-2026-0135',type:'release_general',emp:'E8',step:2,draft:{signer:'head'},submitted:'2026-10-14',delivery:'digital',via:'Walk-in at Head Office',fields:{note:''},trail:[T('2026-10-14','Shaheem Ali','Logged a walk-in request from a former employee'),T('2026-10-15','Shaheem Ali','Drafted the letter and sent it for approval')]}),
  mk({id:'RL-2026-0146',type:'academic_reference',emp:'E5',step:1,submitted:'2026-10-27',delivery:'digital',fields:{institution:'Maldives Institute of Technology',rejoiner:'yes'},trail:[T('2026-10-27','Ahmed Rifau','Submitted the request in OneUI')]}),
- mk({id:'RL-2026-0138',type:'academic_reference',emp:'E1',step:3,submitted:'2026-10-08',delivery:'digital',fields:{institution:'Maldives Business School'},ref:'BML/HR-2462/2026',issuedAt:'2026-10-12',signedBy:'ere',trail:[T('2026-10-08','Aminath Shifa','Submitted the request in OneUI'),T('2026-10-09','Shaheem Ali','Drafted the letter and sent it for approval'),T('2026-10-12','Fathimath Rayya Hilmy','Approved and issued BML/HR-2462/2026')]})
+ mk({id:'RL-2026-0138',type:'academic_reference',emp:'E1',step:3,submitted:'2026-10-08',delivery:'digital',fields:{institution:'Maldives Business School'},ref:'BML/HR-2462/2026',issuedAt:'2026-10-12',signedBy:'ere',trail:[T('2026-10-08','Aminath Shifa','Submitted the request in OneUI'),T('2026-10-09','Shaheem Ali','Drafted the letter and sent it for approval'),T('2026-10-12','ER & Engagement Manager (Sample)','Approved and issued BML/HR-2462/2026')]})
 ];
 export const MANUAL_REG: any[]=[
  {ref:'BML/HR-2478/2026',d:'2026-10-22',staff:'Mariyam Shifza',letter:'Visa Letter',src:'Excel register (before go-live)'},

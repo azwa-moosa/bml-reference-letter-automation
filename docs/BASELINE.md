@@ -4,6 +4,8 @@
 `674e8391c3a71b9a7ac5ed94b6ea60630bf99fda123c31849775fd0f80514375`) and
 `docs/source/er-automation-spec.md` (Rayya's developer handover spec for that file).
 
+> **Restricted:** `docs/source/` is kept unchanged and still contains real names from the prototype. Do not edit or share it; see `docs/SOURCE-RESTRICTED.md`. The app itself uses placeholders (`config/signers.json`, `prisma/seed-data.ts`).
+
 **Rule for this module:** keep the app, the prototype and the spec aligned. Change
 behaviour only one small, recorded step at a time. Anything not in the source files is
 marked **[ASSUMED]**. Anything that needs a business decision is marked **[TO CONFIRM]**.

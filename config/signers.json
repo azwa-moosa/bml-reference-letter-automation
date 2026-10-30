@@ -1,0 +1,5 @@
+{
+  "_note": "Signing authorities printed on Employee Relations letters. Placeholders only in this repository: set the real names here (or, later, in Settings) when the app is deployed. Never commit real staff names with sample data.",
+  "ere": { "name": "ER & Engagement Manager (Sample)", "title": "Employee Relations & Engagement Manager" },
+  "head": { "name": "Head of TR & ER (Sample)", "title": "Head of Total Rewards & Employee Relations" }
+}

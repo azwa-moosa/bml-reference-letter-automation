@@ -59,7 +59,7 @@ describe("full visa journey (v0.2): staff → line manager → TR review → doc
     const q = await t.req(id);
     expect(key(q)).toBe("done"); expect(q.ref ?? null).toBeNull(); expect(q.issuedAt).toBe("2026-10-27"); expect(q.signedBy).toBe("head");
     expect(q.assets?.signature?.id).toBe(sig);
-    expect(q.trail.at(-2)!.what).toBe("Prepared and completed the letter (signatory: Mariyam Shazna)");
+    expect(q.trail.at(-2)!.what).toBe("Prepared and completed the letter (signatory: Head of TR & ER (Sample))");
     expect(q.trail.at(-1)!.what).toMatch(new RegExp(`^Applied signature "Test signature · head" \\(asset ${sig}, SHA-256 [0-9a-f]{12}\\)$`));
     expect(await t.db.counter.findUnique({ where: { key: "reference" } })).toEqual(before);
     expect(q.trail.some((x) => /approv/i.test(x.what) && x.who !== "Hassan Rasheed")).toBe(false); // no signee approval step
@@ -92,7 +92,7 @@ describe("blocking rules", () => {
     await expect(L.apprReturnToEr(t.as("ere"), "RL-2026-0133", "")).rejects.toThrow("Add a comment for the Employee Relations Lead.");
     await L.apprReturnToEr(t.as("ere"), "RL-2026-0133", "Please check the role summary.");
     const q = await t.req("RL-2026-0133");
-    expect(key(q)).toBe("er"); expect(q.apprReturn).toMatchObject({ by: "Fathimath Rayya Hilmy" });
+    expect(key(q)).toBe("er"); expect(q.apprReturn).toMatchObject({ by: "ER & Engagement Manager (Sample)" });
   });
   it("former-staff requests cannot be returned to staff", async () => {
     await expect(L.erReturn(t.as("erl"), "RL-2026-0137", "note")).rejects.toThrow(/can't be returned/);

@@ -2,6 +2,7 @@
  * These were hard-coded constants in the prototype and remain so in this
  * baseline (spec §10). Embassy addresses, institutions and signing
  * authorities are [TO CONFIRM] before go-live. */
+import signerConfig from "../../config/signers.json";
 
 export const EMBASSIES: Record<string, string> = {
   Australia: "Australian High Commission\n21, Srimath R. G. Senanayake Mawatha\nColombo 07\nSri Lanka",
@@ -22,10 +23,8 @@ export const embLabel = (c: string) => (EMBASSIES[c] ? `${c} · ${EMBASSIES[c].s
 export const INSTITUTIONS = ["Avid College", "Clique College", "College of Defence and Security Studies", "Cyryx College", "Maldives Business School", "Maldives Institute of Technology", "Mandhu College", "MAPS College", "MIANZ College", "National College of Policing and Law Enforcement", "Villa College", "Zikura International College"];
 
 export type SignerKey = "ere" | "head";
-export const SIGNERS: Record<SignerKey, { name: string; title: string }> = {
-  ere: { name: "Fathimath Rayya Hilmy", title: "Employee Relations & Engagement Manager" },
-  head: { name: "Mariyam Shazna", title: "Head of Total Rewards & Employee Relations" },
-};
+/** Signing authorities come from configuration (config/signers.json), not code (hardening RL-G06). */
+export const SIGNERS: Record<SignerKey, { name: string; title: string }> = { ere: signerConfig.ere, head: signerConfig.head };
 export const FOOTER = "This letter is electronically generated and issued by People & Culture, Bank of Maldives PLC, and does not require a signature.";
 
 export type LetterType = "academic_excuse" | "academic_reference" | "financial_reference" | "job_opportunity" | "visa" | "release_reference" | "release_general";
@@ -61,8 +60,8 @@ export const ROLES: Record<RoleKey, { label: string; short: string; name: string
   manager: { label: "Line manager", short: "Line manager", name: "Hassan Rasheed", emp: "E2", meta: "Manager, Card Operations · line manager of Aminath Shifa and Ibrahim Naseem", portal: "ESS Portal", home: "/team" },
   tr: { label: "Total Rewards team", short: "Total Rewards", name: "Aishath Reema", emp: "E11", meta: "Total Rewards Officer · People & Culture", portal: "HR Workspace", home: "/tr" },
   erl: { label: "Employee Relations Lead", short: "Employee Relations Lead", name: "Shaheem Ali", emp: "E10", meta: "Employee Relations Lead · People & Culture", portal: "HR Workspace", home: "/inbox" },
-  ere: { label: "ER & Engagement Manager", short: "ER & Engagement Manager", name: "Fathimath Rayya Hilmy", emp: "E12", meta: "Employee Relations & Engagement Manager · People & Culture", portal: "HR Workspace", home: "/approve" },
-  head: { label: "Head of Total Rewards & ER", short: "Head of TR & ER", name: "Mariyam Shazna", emp: "E13", meta: "Head of Total Rewards & Employee Relations · People & Culture", portal: "HR Workspace", home: "/approve" },
+  ere: { label: "ER & Engagement Manager", short: "ER & Engagement Manager", name: signerConfig.ere.name, emp: "E12", meta: "Employee Relations & Engagement Manager · People & Culture", portal: "HR Workspace", home: "/approve" },
+  head: { label: "Head of Total Rewards & ER", short: "Head of TR & ER", name: signerConfig.head.name, emp: "E13", meta: "Head of Total Rewards & Employee Relations · People & Culture", portal: "HR Workspace", home: "/approve" },
 };
 export const ROLE_KEYS = Object.keys(ROLES) as RoleKey[];
 export const isRole = (k: unknown): k is RoleKey => typeof k === "string" && k in ROLES;
