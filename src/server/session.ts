@@ -31,6 +31,7 @@ export const demoAllowed = () => process.env.NODE_ENV !== "production" || proces
 
 export async function getViewer(): Promise<Viewer> {
   if (!demoAllowed()) throw new Error("Demo sign-in is disabled. Connect OneUI single sign-on (docs/HANDOVER.md).");
+  secret(); // RL-G05: no page or action runs outside development without a strong APP_SECRET
   const role = unsign((await cookies()).get(ROLE_COOKIE)?.value) ?? "staff";
   return { role, emp: ROLES[role].emp, name: ROLES[role].name };
 }
