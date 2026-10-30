@@ -10,10 +10,14 @@ import { isRole, ROLES, type RoleKey } from "@/domain/config";
 import type { Viewer } from "@/domain/types";
 
 export const ROLE_COOKIE = "rl_role";
+/* Hardening RL-G05: the built-in development key is used only when NODE_ENV is
+ * "development" (next dev) or "test" (Vitest). Anywhere else, including a
+ * production build with ALLOW_DEMO_SIGNIN=1, a 32+ character APP_SECRET is required. */
+const DEV_ONLY_ENVS = ["development", "test"];
 const secret = () => {
   const s = process.env.APP_SECRET;
   if (s && s.length >= 32) return s;
-  if (process.env.NODE_ENV === "production" && process.env.ALLOW_DEMO_SIGNIN !== "1") throw new Error("APP_SECRET (32+ characters) is required in production.");
+  if (!DEV_ONLY_ENVS.includes(process.env.NODE_ENV ?? "")) throw new Error("APP_SECRET (32+ characters) is required outside development, including when ALLOW_DEMO_SIGNIN=1.");
   return "dev-only-reference-letters-secret-change-me-000000";
 };
 const mac = (v: string) => createHmac("sha256", secret()).update("role:" + v).digest("base64url");
