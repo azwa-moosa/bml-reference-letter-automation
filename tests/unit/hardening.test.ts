@@ -29,3 +29,4 @@ describe("RL-G05: no fallback signing secret outside development", () => {
     env.NODE_ENV = "test"; expect(signRole("staff")).toMatch(/^staff\./);
   });
 });
+

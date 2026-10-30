@@ -16,7 +16,7 @@ describe("full visa journey (v0.2): staff → line manager → TR review → doc
     id = r.id; expect(id).toBe("RL-2026-0147");
     const q = await t.req(id);
     expect(key(q)).toBe("lm");
-    expect(q.trail[0]).toMatchObject({ who: "Aminath Shifa", what: "Submitted the request in OneUI" });
+    expect(q.trail[0]).toMatchObject({ who: "Aminath Shifa", what: "Submitted the request" });
     expect(q.draft.addressee).toContain("Embassy of Japan");
   });
   it("only the requester's line manager can approve", async () => {

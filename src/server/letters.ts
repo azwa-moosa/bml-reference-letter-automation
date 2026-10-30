@@ -138,7 +138,7 @@ export async function submitRequest(ctx: Ctx, raw: unknown): Promise<{ id: strin
     await tx.letterRequest.create({ data: {
       id, type: F.type, empKey: empId, step: 1, submitted: w.today, delivery, via: null, fields: JSON.stringify(f), routeVersion: 2,
       draft: JSON.stringify(makeDraft(F.type as LetterType, e, f, w.positions)), createdAt: new Date(), updatedAt: new Date(),
-      trail: { create: [F.forEmp ? `Submitted on behalf of ${e.name}` : "Submitted the request in OneUI", ...rejoinLine].map((what) => ({ d: w.today, who: v.name, what, role: v.role, at: new Date() })) },
+      trail: { create: [F.forEmp ? `Submitted on behalf of ${e.name}` : "Submitted the request", ...rejoinLine].map((what) => ({ d: w.today, who: v.name, what, role: v.role, at: new Date() })) },
     } });
     return id;
   });

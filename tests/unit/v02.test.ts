@@ -39,7 +39,7 @@ describe("rejoiner question", () => {
     const r = await L.submitRequest(t.as("staff"), { type: "job_opportunity", values: { rejoiner: "yes" } });
     const q = await t.req(r.id);
     expect(q.fields.rejoiner).toBe("yes");
-    expect(q.trail.map((x) => x.what)).toEqual(["Submitted the request in OneUI", "Answered Yes to the rejoiner question: flagged for manual verification by Employee Relations"]);
+    expect(q.trail.map((x) => x.what)).toEqual(["Submitted the request", "Answered Yes to the rejoiner question: flagged for manual verification by Employee Relations"]);
     const f = await L.submitRequest(t.as("staff"), { type: "financial_reference", values: { purpose: "Loan", rejoiner: "yes" } });
     expect((await t.req(f.id)).fields.rejoiner).toBeUndefined();
   });
