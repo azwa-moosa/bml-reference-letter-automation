@@ -4,7 +4,7 @@ A working web app for Bank of Maldives People & Culture. Staff request a referen
 
 - **Financial Reference and Visa letters** go to **Total Rewards**: TR review → document preparation → completed, with no separate signee approval. For Visa, the line manager first confirms the dates.
 - **Job Opportunity, Academic Reference, Academic Excuse and Staff Release letters** go to **Employee Relations**: the ER Lead drafts and reviews, and the chosen signing authority approves.
-- Letters carry the authorised signature (and stamp, if configured) and can be downloaded as a PDF. They no longer have a document reference number; internal request IDs (`RL-2026-####`) remain.
+- Letters carry the authorised signature (and stamp, if configured) and can be downloaded as a PDF. They no longer have a document reference number; internal request IDs (`RL-YYYY-####`, for example `RL-2026-0147`) remain.
 - Staff who left the Bank and rejoined are flagged, and Employee Relations verifies their employment periods before the letter is issued.
 
 What changed in v0.2 is in [CHANGELOG.md](CHANGELOG.md). What still needs real systems, authorised images or a decision is in [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md).
@@ -63,7 +63,7 @@ Use the theme switch in the top bar for Light, Dark or System.
 | `npm run dev` | Start the app at http://localhost:3000 |
 | `npm run setup` | Generate the database client and load the sample data (first time) |
 | `npm run db:reset` | Delete the local database and reload the sample data |
-| `npm test` | Run the 52 tests (rules, every workflow action, TR workflow, rejoiners, signatures and stamps, letters, PDF, database upgrade) |
+| `npm test` | Run the 57 tests (rules, every workflow action, TR workflow, rejoiners, signatures and stamps, letters, PDF, database upgrade) |
 | `npm run db:migrate` | Apply new migrations to an existing database (keeps your data; moves open Financial/Visa requests to the Total Rewards workflow) |
 | `npm run typecheck` / `npm run lint` | Static checks |
 | `npm run build` then `npm start` | Production build |

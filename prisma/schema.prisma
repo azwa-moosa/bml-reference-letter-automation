@@ -2,7 +2,7 @@
 //
 // Mirrors the prototype's in-memory data (er-automation-prototype.html,
 // SHA-256 674e8391…0514375) so behaviour stays the same while the data is
-// now stored. SQLite locally; PostgreSQL-ready (see docs/ARCHITECTURE.md).
+// now stored. SQLite locally; PostgreSQL-ready (see docs/HANDOVER.md § PostgreSQL).
 //
 // Conventions
 // - Business dates are ISO strings "YYYY-MM-DD", as in the prototype.
@@ -10,7 +10,7 @@
 //   text, keeping the prototype's object shapes.
 // - LetterRequest.version gives optimistic concurrency.
 // - The migration SQL is hand-written (prisma/migrations/0001_init) and
-//   applied by scripts/db-migrate.ts; tests/unit/schema.test.ts checks they match.
+//   applied by scripts/db-migrate.ts; tests/unit/schema-pdf.test.ts checks they match.
 
 generator client {
   provider = "prisma-client"
@@ -70,7 +70,7 @@ model ManualRegisterEntry {
   src    String
 }
 
-/// Sequences: "request" (RL-2026-####). "reference" (BML/HR-####/2026) is kept for
+/// Sequences: "request" (RL-YYYY-####, internal request IDs). "reference" (BML/HR-####/2026) is kept for
 /// history only: v0.2 no longer gives document reference numbers.
 model Counter {
   key  String @id

@@ -2,7 +2,7 @@
   "name": "bml-reference-letters",
   "version": "0.2.0",
   "private": true,
-  "description": "Reference Letter Automation: staff letter requests, line-manager and Total Rewards steps, ER Lead drafting, approval, reference numbers and letter PDFs. Built from Rayya's prototype and handover spec.",
+  "description": "Reference Letter Automation: staff letter requests, line-manager and Total Rewards steps, ER Lead drafting, approval, internal request IDs (RL-YYYY-####, no document reference numbers) and letter PDFs. Built from Rayya's prototype and handover spec.",
   "engines": {
     "node": ">=20.19"
   },

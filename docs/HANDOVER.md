@@ -41,8 +41,11 @@ Everything else already checks `viewer.role` and `viewer.emp` on the server.
 - `LetterRequest` keeps the prototype's request shape. Form fields, draft, salary and
   returned notes are stored as JSON text.
 - `TrailEntry` is the history. A database trigger blocks updates.
-- `Counter` holds the next request number and reference number. Both are incremented
-  inside the same transaction as the change, so numbers are never reused or skipped.
+- `Counter` holds the next **internal request number** (`request` → `RL-YYYY-####`), incremented
+  inside the same transaction as the change, so numbers are never reused or skipped. Since v0.2
+  the app gives **no document reference numbers**: the old `reference` counter
+  (`BML/HR-####/YYYY`), the manual register and `LetterRequest.ref` are kept only so letters
+  issued before v0.2 still show theirs. Nothing in v0.2 increments or sets them.
 - Migrations are hand-written SQL (`prisma/migrations/0001_init`) applied by
   `scripts/db-migrate.ts`. `tests/unit/schema-pdf.test.ts` checks they match
   `schema.prisma`. You can switch to `prisma migrate` at any time.
@@ -79,10 +82,10 @@ Everything else already checks `viewer.role` and `viewer.emp` on the server.
 
 ## Tests
 
-`npm test` runs 52 tests (the 32 from v0.1 updated, plus `tests/unit/v02.test.ts`):
+`npm test` runs 57 tests (the 32 from v0.1 updated, `tests/unit/v02.test.ts`, and `tests/unit/hardening.test.ts`):
 
 - **Routes, statuses, counts and menus:** the rules carried over from the prototype.
-- **Every workflow action:** each one run as the right role and as the wrong role, including reference allocation, blocking rules, return, resubmit, decline and cancel.
+- **Every workflow action:** each one run as the right role and as the wrong role, including request-ID allocation (and that no document reference is given), blocking rules, return, resubmit, decline and cancel.
 - **Letter wording:** the letters render with the prototype's wording.
 - **PDF:** each seeded letter type produces a PDF.
 - **Schema:** the hand-written migration matches the Prisma schema.
