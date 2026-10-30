@@ -1,5 +1,13 @@
 # Changelog
 
+## Hardening · 31 Oct 2026
+Security and hygiene only. No workflow, status, routing or permission change. Gap IDs refer to `docs/TECHNICAL_GAP_REGISTER.md`.
+- **RL-G05** The built-in development signing key is used only under `npm run dev` and the tests. Any other environment, including a production build with `ALLOW_DEMO_SIGNIN=1`, refuses to sign in without a 32+ character `APP_SECRET` (`start-mac.command` already generates one).
+- **RL-G06** No real staff names in `src/`, `prisma/` or `tests/`. Signing-authority names now come from `config/signers.json` (placeholders: "ER & Engagement Manager (Sample)", "Head of TR & ER (Sample)"). `docs/source/` is unchanged (SHA-pinned) and marked restricted (`docs/SOURCE-RESTRICTED.md`). Existing local databases keep the old sample names until `npm run db:reset`.
+- **RL-G12** History line "Submitted the request in OneUI" is now "Submitted the request".
+- **RL-G16** Docs describe v0.2 numbering: internal `RL-YYYY-####` request IDs only; no document reference numbers.
+- Tests: 57 (52 existing + 5 in `tests/unit/hardening.test.ts`). Five existing assertions changed: three contained real names, two asserted the old "in OneUI" wording.
+
 ## v0.2 · 29 Oct 2026
 
 ### Look and feel
